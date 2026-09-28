@@ -54,5 +54,4 @@ class SmartphoneTest {
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("price cannot be negative");
     }
-
 }

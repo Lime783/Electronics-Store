@@ -1,10 +1,15 @@
 package com.example.product.other;
 
+import com.example.product.smartphone.Smartphone;
+import com.example.product.smartphone.components.Accessory;
+import com.example.product.smartphone.components.BatteryCapacity;
+import com.example.product.smartphone.components.Color;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class ElectronicsTest {
 
@@ -26,4 +31,16 @@ class ElectronicsTest {
         assertThat(electronics.getAmountAvailable()).isEqualTo(amountAvailable);
     }
 
+    @Test
+    void shouldThrowExceptionWhenPriceIsNegative() {
+        // Given
+        String name = "mp3";
+        BigDecimal price = new BigDecimal("-200");
+        int amountAvailable = 1;
+
+        // When and Then
+        assertThatThrownBy(() -> new Electronics(name, price, amountAvailable))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("price cannot be negative");
+    }
 }
