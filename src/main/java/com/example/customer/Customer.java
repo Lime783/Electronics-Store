@@ -1,10 +1,7 @@
 package com.example.customer;
 
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 import java.util.Objects;
 import java.util.UUID;
