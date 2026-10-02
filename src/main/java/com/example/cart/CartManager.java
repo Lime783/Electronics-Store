@@ -33,12 +33,9 @@ public class CartManager {
     }
 
     public Optional<Product> findProducFromCart(Product product, Cart cart) {
-        for (Product productToFind : cart.getProducts()) {
-            if (productToFind.getId().equals(product.getId())) {
-                return Optional.of(productToFind);
-            }
-        }
-        return Optional.empty();
+        return cart.getProducts().stream()
+                .filter(productToFind -> productToFind.getId().equals(product.getId()))
+                .findFirst();
     }
 
     public Product getProductFromCart(Product product, Cart cart) {
@@ -50,8 +47,7 @@ public class CartManager {
     }
 
     public void listAllProductsFromCart(Cart cart) {
-        for (Product product : getAllProductsFromCart(cart)) {
-            System.out.println(product);
-        }
+        getAllProductsFromCart(cart)
+                .forEach(System.out::println);
     }
 }

@@ -26,12 +26,9 @@ public class InMemoryProductRepository implements ProductRepository {
 
     @Override
     public Optional<Product> findProductByID(UUID id) {
-        for (Product product : products) {
-            if (product.getId().equals(id)) {
-                return Optional.of(product);
-            }
-        }
-        return Optional.empty();
+        return products.stream()
+                .filter(productToFind -> productToFind.getId().equals(id))
+                .findFirst();
     }
 
     @Override
