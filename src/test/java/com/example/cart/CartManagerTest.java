@@ -1,10 +1,13 @@
 package com.example.cart;
 
-import com.example.product.Product;
-import com.example.product.smartphone.Smartphone;
-import com.example.product.smartphone.components.Accessory;
-import com.example.product.smartphone.components.BatteryCapacity;
-import com.example.product.smartphone.components.Color;
+import com.example.shop.cart.Cart;
+import com.example.shop.cart.CartManager;
+import com.example.shop.cart.InMemoryCartRepository;
+import com.example.shop.product.Product;
+import com.example.shop.product.smartphone.Smartphone;
+import com.example.shop.product.smartphone.components.Accessory;
+import com.example.shop.product.smartphone.components.BatteryCapacity;
+import com.example.shop.product.smartphone.components.Color;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;

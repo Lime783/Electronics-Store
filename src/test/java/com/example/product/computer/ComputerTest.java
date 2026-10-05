@@ -1,12 +1,9 @@
 package com.example.product.computer;
 
-import com.example.product.computer.components.PCCase;
-import com.example.product.computer.components.Processor;
-import com.example.product.computer.components.RAM;
-import com.example.product.smartphone.Smartphone;
-import com.example.product.smartphone.components.Accessory;
-import com.example.product.smartphone.components.BatteryCapacity;
-import com.example.product.smartphone.components.Color;
+import com.example.shop.product.computer.Computer;
+import com.example.shop.product.computer.components.PCCase;
+import com.example.shop.product.computer.components.Processor;
+import com.example.shop.product.computer.components.RAM;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;

@@ -1,5 +1,8 @@
 package com.example.customer;
 
+import com.example.shop.customer.Customer;
+import com.example.shop.customer.CustomerManager;
+import com.example.shop.customer.InMemoryCustomerRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

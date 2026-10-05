@@ -1,5 +1,6 @@
 package com.example.product.other;
 
+import com.example.shop.product.other.Electronics;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;

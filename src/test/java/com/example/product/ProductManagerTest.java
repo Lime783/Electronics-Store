@@ -1,9 +1,12 @@
 package com.example.product;
 
-import com.example.product.smartphone.Smartphone;
-import com.example.product.smartphone.components.Accessory;
-import com.example.product.smartphone.components.BatteryCapacity;
-import com.example.product.smartphone.components.Color;
+import com.example.shop.product.InMemoryProductRepository;
+import com.example.shop.product.Product;
+import com.example.shop.product.ProductManager;
+import com.example.shop.product.smartphone.Smartphone;
+import com.example.shop.product.smartphone.components.Accessory;
+import com.example.shop.product.smartphone.components.BatteryCapacity;
+import com.example.shop.product.smartphone.components.Color;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -11,7 +14,6 @@ import java.math.BigDecimal;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 class ProductManagerTest {
 

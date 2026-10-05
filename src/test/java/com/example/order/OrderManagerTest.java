@@ -1,25 +1,25 @@
 package com.example.order;
 
-import com.example.cart.Cart;
-import com.example.customer.Customer;
-import com.example.product.Product;
-import com.example.product.computer.Computer;
-import com.example.product.computer.components.PCCase;
-import com.example.product.computer.components.Processor;
-import com.example.product.computer.components.RAM;
+import com.example.shop.cart.Cart;
+import com.example.shop.customer.Customer;
+import com.example.shop.order.InMemoryOrderRepository;
+import com.example.shop.order.Order;
+import com.example.shop.order.OrderManager;
+import com.example.shop.product.Product;
+import com.example.shop.product.computer.Computer;
+import com.example.shop.product.computer.components.PCCase;
+import com.example.shop.product.computer.components.Processor;
+import com.example.shop.product.computer.components.RAM;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
 class OrderManagerTest {

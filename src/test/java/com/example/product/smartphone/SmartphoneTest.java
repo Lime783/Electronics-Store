@@ -1,8 +1,9 @@
 package com.example.product.smartphone;
 
-import com.example.product.smartphone.components.Accessory;
-import com.example.product.smartphone.components.BatteryCapacity;
-import com.example.product.smartphone.components.Color;
+import com.example.shop.product.smartphone.Smartphone;
+import com.example.shop.product.smartphone.components.Accessory;
+import com.example.shop.product.smartphone.components.BatteryCapacity;
+import com.example.shop.product.smartphone.components.Color;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
