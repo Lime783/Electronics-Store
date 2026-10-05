@@ -1,5 +1,7 @@
 package com.example.shop.order;
 
+import com.example.exceptions.DuplicateException;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -14,6 +16,9 @@ public class InMemoryOrderRepository implements OrderRepository {
 
     @Override
     public void add(Order orderToAdd) {
+        if (orders.contains(orderToAdd)) {
+            throw new DuplicateException("Order " + orderToAdd.getId() + " already exists");
+        }
         orders.add(orderToAdd);
     }
 

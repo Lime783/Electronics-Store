@@ -1,5 +1,6 @@
 package com.example.shop.cart;
 
+import com.example.exceptions.DuplicateException;
 import lombok.Getter;
 
 import java.util.ArrayList;
@@ -17,6 +18,9 @@ public class InMemoryCartRepository implements CartRepository {
 
     @Override
     public void add(Cart cart) {
+        if (carts.contains(cart)) {
+            throw new DuplicateException("Cart " + cart.getId() + " already exists");
+        }
         carts.add(cart);
     }
 

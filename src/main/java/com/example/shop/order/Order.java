@@ -15,7 +15,7 @@ import java.util.UUID;
 
 @Getter
 @Setter
-@EqualsAndHashCode
+@EqualsAndHashCode(exclude = "id")
 @ToString
 public class Order {
     private final UUID id;

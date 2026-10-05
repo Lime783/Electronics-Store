@@ -10,7 +10,7 @@ import java.util.Objects;
 import java.util.UUID;
 
 @Getter
-@EqualsAndHashCode
+@EqualsAndHashCode(of = "id")
 @ToString
 public class Invoice {
     private final UUID id;

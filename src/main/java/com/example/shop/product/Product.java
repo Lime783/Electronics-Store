@@ -13,7 +13,7 @@ import java.util.UUID;
 
 @Getter
 @Setter
-@EqualsAndHashCode
+@EqualsAndHashCode(of = "name")
 @ToString
 public abstract class Product {
     private final UUID id;

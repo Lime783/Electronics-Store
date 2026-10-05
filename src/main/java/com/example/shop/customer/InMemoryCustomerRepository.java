@@ -1,5 +1,6 @@
 package com.example.shop.customer;
 
+import com.example.exceptions.DuplicateException;
 import lombok.Getter;
 
 import java.util.ArrayList;
@@ -17,6 +18,9 @@ public class InMemoryCustomerRepository implements CustomerRepository {
 
     @Override
     public void add(Customer customerToAdd) {
+        if (customers.contains(customerToAdd)){
+            throw new DuplicateException("Customer " + customerToAdd.getFirstName() + " " + customerToAdd.getLastName() + " already exists: " + customerToAdd.getId());
+        }
         customers.add(customerToAdd);
     }
 

@@ -8,7 +8,7 @@ import java.util.UUID;
 
 @Getter
 @Setter
-@EqualsAndHashCode
+@EqualsAndHashCode(exclude = {"id", "email", "password"})
 @ToString
 public class Customer {
     private static final String PHONE_PATTERN = "^\\+?[0-9][0-9\\s-]{7,19}$";

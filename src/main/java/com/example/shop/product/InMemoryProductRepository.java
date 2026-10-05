@@ -1,5 +1,6 @@
 package com.example.shop.product;
 
+import com.example.exceptions.DuplicateException;
 import lombok.Getter;
 
 import java.util.ArrayList;
@@ -16,6 +17,9 @@ public class InMemoryProductRepository implements ProductRepository {
     }
 
     public void add(Product productToAdd) {
+        if (products.contains(productToAdd)) {
+            throw new DuplicateException("Product " + productToAdd.getName() + " already exists: " + productToAdd.getId());
+        }
         products.add(productToAdd);
     }
 
