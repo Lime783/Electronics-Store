@@ -1,6 +1,6 @@
 package com.example.invoice;
 
-import com.example.cart.Cart;
+import com.example.order.Order;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
@@ -14,14 +14,14 @@ import java.util.UUID;
 @ToString
 public class Invoice {
     private final UUID id;
-    private final Cart cart;
+    private final Order order;
     private final LocalDateTime date;
 
-    public Invoice(Cart cart){
-        Objects.requireNonNull(cart);
+    public Invoice(Order order) {
+        Objects.requireNonNull(order);
 
-        this.id = cart.getId();
-        this.cart = cart;
+        this.id = order.getId();
+        this.order = order;
         this.date = LocalDateTime.now();
     }
 }

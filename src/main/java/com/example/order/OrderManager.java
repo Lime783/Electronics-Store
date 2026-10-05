@@ -25,6 +25,4 @@ public class OrderManager {
     public List<Order> getAllOrdersFromDatabase() {
         return inMemoryOrderRepository.getAllOrders();
     }
-
-
 }

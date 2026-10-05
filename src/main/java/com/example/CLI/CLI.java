@@ -6,6 +6,7 @@ import com.example.cart.InMemoryCartRepository;
 import com.example.customer.Customer;
 import com.example.customer.CustomerManager;
 import com.example.customer.InMemoryCustomerRepository;
+import com.example.invoice.InvoiceManager;
 import com.example.order.InMemoryOrderRepository;
 import com.example.order.Order;
 import com.example.order.OrderManager;
@@ -44,6 +45,7 @@ public class CLI {
     private final CustomerManager customerManager;
     private final OrderManager orderManager;
     private final ProductManager productManager;
+    private final InvoiceManager invoiceManager;
 
     public CLI(InMemoryCartRepository inMemoryCartRepository, InMemoryOrderRepository inMemoryOrderRepository, InMemoryCustomerRepository inMemoryCustomerRepository, InMemoryProductRepository inMemoryProductRepository) {
         Objects.requireNonNull(inMemoryCartRepository);
@@ -60,6 +62,7 @@ public class CLI {
         this.customerManager = new CustomerManager(inMemoryCustomerRepository);
         this.orderManager = new OrderManager(inMemoryOrderRepository);
         this.productManager = new ProductManager(inMemoryProductRepository);
+        this.invoiceManager = new InvoiceManager();
 
         while (true) {
             chooseWhatToDo();
@@ -327,86 +330,128 @@ public class CLI {
         System.out.println("""
                 What command do you want to use?
                 1 - create order
-                2 - delete order
+                2 - cancel order
                 3 - list all orders
+                4 - pay (confirm) for order
+                5 - complete order
+                6 - create invoice for an order
                 """);
         switch (scanner.nextLine()) {
-            case "1" -> addOrder();
-            case "2" -> deleteOrder();
+            case "1" -> createOrder();
+            case "2" -> cancelOrder();
             case "3" -> listAllOrders();
+            case "4" -> confirmOrder();
+            case "5" -> completeOrder();
+            case "6" -> createInvoice();
         }
     }
 
-    private void addOrder() {
+    private void createOrder() {
         System.out.print("UUID of customer: ");
-        UUID customerID = UUID.fromString(scanner.next());
+        Customer customer = customerManager.getCustomerById(UUID.fromString(scanner.next()));
 
         System.out.print("UUID of cart: ");
-        UUID cartID = UUID.fromString(scanner.nextLine());
+        Cart cart = cartManager.getCartById(UUID.fromString(scanner.nextLine()));
 
-        Order order = new Order(customerManager.getCustomerById(customerID),
-                cartManager.getCartById(cartID));
+        Order order = new Order(customer, cart);
 
         getOrderRepository().add(order);
     }
 
-    private void deleteOrder() {
-        System.out.print("UUID of order to delete: ");
+    private void cancelOrder() {
+        System.out.print("UUID of order to cancel: ");
 
-        UUID id = UUID.fromString(scanner.next());
+        Order orderToCancel = orderManager.getOrderById(UUID.fromString(scanner.next()));
 
-        orderManager.removeOrderFromDatabase(
-                orderManager.getOrderById(id)
-        );
+        orderToCancel.cancel();
     }
 
     private void listAllOrders() {
         orderRepository.getAllOrders().forEach(System.out::println);
     }
 
+    private void confirmOrder(){
+        System.out.print("UUID of order to pay for: ");
+
+        Order orderToConfirm = orderManager.getOrderById(UUID.fromString(scanner.next()));
+
+        System.out.print("Total to pay: " + orderToConfirm.getTotalPrice() + ", would you like to pay? (Y/N)");
+        if (scanner.next().equalsIgnoreCase("Y")) {
+            orderToConfirm.confirm();
+            System.out.print("Payment successful for order: " + orderToConfirm.getId());
+        } else {
+            System.out.print("Bruh");
+        }
+    }
+
+    private void completeOrder(){
+        System.out.print("UUID of order to complete: ");
+
+        Order orderToComplete = orderManager.getOrderById(UUID.fromString(scanner.next()));
+
+        orderToComplete.complete();
+    }
+
+    private void createInvoice(){
+        System.out.print("UUID of order to generate invoice for: ");
+
+        Order orderToInvoice = orderManager.getOrderById(UUID.fromString(scanner.next()));
+
+        invoiceManager.generateInvoice(orderToInvoice);
+    }
+
     private void showHelp() {
         System.out.println("""
-                
-                ==================== HELP ====================
-                
-                Main menu:
-                1 / CUSTOMERS  - manage customers
-                2 / PRODUCTS   - manage products
-                3 / CARTS      - manage shopping carts
-                4 / ORDERS     - manage orders
-                5             - list everything
-                HELP          - show this help
-                QUIT          - exit the application
-                
-                Customers:
-                1 - add customer
-                2 - delete customer
-                3 - list all customers
-                
-                Products:
-                1 - add product
-                2 - delete product
-                3 - list all products
-                
-                When adding a product, you can choose:
-                1 - Computer
-                2 - Smartphone
-                3 - Other
-                
-                Carts:
-                1 - create cart
-                2 - delete cart
-                3 - list all carts
-                4 - add product to cart
-                
-                Orders:
-                1 - create order
-                2 - delete order
-                3 - list all orders
-                
-                Enter a number or command shown above.
-                ==============================================
-                """);
+            
+            ==================== HELP ====================
+            
+            MAIN MENU
+            1 / CUSTOMERS  - manage customers
+            2 / PRODUCTS   - manage products
+            3 / CARTS      - manage shopping carts
+            4 / ORDERS     - manage orders
+            5             - list everything
+            HELP          - show this help
+            QUIT          - exit the application
+            
+            CUSTOMERS
+            1 - add customer
+            2 - delete customer
+            3 - list all customers
+            
+            PRODUCTS
+            1 - add product
+            2 - delete product
+            3 - list all products
+            
+            Product types:
+            1 - Computer
+            2 - Smartphone
+            3 - Other
+            
+            CARTS
+            1 - create cart
+            2 - delete cart
+            3 - list all carts
+            4 - add product to cart
+            
+            ORDERS
+            1 - create order
+            2 - cancel order
+            3 - list all orders
+            4 - pay / confirm order
+            5 - complete order
+            
+            ORDER FLOW
+            Create order -> Pay / Confirm -> Complete
+            An order can also be cancelled.
+            
+            TIP
+            UUIDs are required when deleting or modifying
+            customers, products, carts and orders.
+            
+            ==============================================
+            """);
     }
 
 

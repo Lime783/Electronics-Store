@@ -22,6 +22,7 @@ class CustomerTest {
 
     @BeforeEach
     void setUp() {
+        customerRepository = new InMemoryCustomerRepository();
         customerManager = new CustomerManager(customerRepository);
     }
 

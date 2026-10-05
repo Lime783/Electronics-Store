@@ -9,6 +9,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -22,6 +23,7 @@ public class Order {
     private final Cart cart;
     private final BigDecimal totalPrice;
     private OrderStatus orderStatus;
+    private final LocalDateTime orderDate;
 
     public Order(Customer customer, Cart cart) {
         requireData(customer, cart);
@@ -31,6 +33,7 @@ public class Order {
         this.cart = cart;
         this.totalPrice = calculateTotalPrice();
         this.orderStatus = OrderStatus.PENDING;
+        this.orderDate = LocalDateTime.now();
     }
 
     private void requireData(Customer customer, Cart cart) {
