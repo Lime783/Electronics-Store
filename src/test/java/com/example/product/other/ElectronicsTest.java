@@ -13,7 +13,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class ElectronicsTest {
 
-    Electronics electronics;
+    private Electronics electronics;
 
     @Test
     void shouldCreateElectronicsSuccessfully() {

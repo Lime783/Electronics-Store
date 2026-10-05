@@ -35,7 +35,7 @@ class CustomerTest {
         customerManager.addCustomerToDatabase(customer);
 
         // Then
-        assertThat(customer).isEqualTo(customerManager.getCustomerById(customer));
+        assertThat(customer).isEqualTo(customerManager.getCustomerById(customer.getId()));
     }
 
     @Test

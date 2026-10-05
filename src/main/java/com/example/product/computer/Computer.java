@@ -4,9 +4,7 @@ import com.example.product.Product;
 import com.example.product.computer.components.PCCase;
 import com.example.product.computer.components.Processor;
 import com.example.product.computer.components.RAM;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 import java.math.BigDecimal;
@@ -14,6 +12,8 @@ import java.util.Objects;
 
 @Getter
 @Setter
+@EqualsAndHashCode(callSuper = true)
+@ToString(callSuper = true)
 public class Computer extends Product {
     private Processor processor;
     private RAM ram;

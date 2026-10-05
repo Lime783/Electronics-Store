@@ -2,6 +2,7 @@ package com.example.customer;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 public class CustomerManager {
     private final InMemoryCustomerRepository customerRepository;
@@ -18,12 +19,12 @@ public class CustomerManager {
         customerRepository.deleteByID(customer.getId());
     }
 
-    public Optional<Customer> findCustomerById(Customer customer) {
-        return customerRepository.findCustomerByID(customer.getId());
+    public Optional<Customer> findCustomerById(UUID id) {
+        return customerRepository.findCustomerByID(id);
     }
 
-    public Customer getCustomerById(Customer customer) {
-        return customerRepository.getCustomerByID(customer.getId());
+    public Customer getCustomerById(UUID id) {
+        return customerRepository.getCustomerByID(id);
     }
 
     public List<Customer> getAllCustomersFromDatabase() {

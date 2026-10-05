@@ -1,6 +1,8 @@
 package com.example.product.other;
 
 import com.example.product.Product;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 import java.math.BigDecimal;
 

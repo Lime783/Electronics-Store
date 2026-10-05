@@ -7,11 +7,13 @@ import com.example.product.smartphone.components.BatteryCapacity;
 import com.example.product.smartphone.components.Color;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -42,55 +44,112 @@ class CartManagerTest {
         cartManager = new CartManager(inMemoryCartRepository);
     }
 
-    @Test
-    void shouldAddCartToDataBase() {
-        // When
-        cartManager.addCartToDataBase(cart);
+    @Nested
+    class DataBaseTests {
 
-        // Then
-        assertThat(cart).isEqualTo(inMemoryCartRepository.getCartByID(cart.getId()));
+        @Test
+        void shouldAddCartToDataBase() {
+            // When
+            cartManager.addCartToDataBase(cart);
+
+            // Then
+            assertThat(cart).isEqualTo(inMemoryCartRepository.getCartByID(cart.getId()));
+        }
+
+        @Test
+        void shouldGetCartFromDataBase() {
+            // Given
+            cartManager.addCartToDataBase(cart);
+
+            // When
+            Cart cartTest = cartManager.getCartById(cart.getId());
+
+            // Then
+            assertThat(cartTest).isEqualTo(cart);
+        }
+
+        @Test
+        void shouldGetAllCartsFromDataBase() {
+            // Given
+            List<Cart> carts = new ArrayList<>(List.of(cart, cart));
+
+            // When
+            cartManager.addCartToDataBase(cart);
+            cartManager.addCartToDataBase(cart);
+
+            // Then
+            assertThat(carts).isEqualTo(inMemoryCartRepository.getAllCarts());
+        }
+
+        @Test
+        void shouldReturnEmptyOptionalWhenCartDoesNotExistInDataBase() {
+            assertThat(inMemoryCartRepository.findCartByID(new UUID(0L, 0L))).isEmpty();
+        }
+
+        @Test
+        void shouldRemoveCartFromDataBase() {
+            // Given
+            cartManager.addCartToDataBase(cart);
+
+            // When
+            cartManager.removeCartFromDataBase(cart);
+
+            // Then
+            assertThat(inMemoryCartRepository.findCartByID(cart.getId())).isEmpty();
+        }
     }
 
-    @Test
-    void shouldAddProductToCart() {
-        // When
-        cartManager.addProductToCart(correctSmartphone, cart);
+    @Nested
+    class CartAndProductsTests {
 
-        // Then
-        assertThat(correctSmartphone).isEqualTo(cartManager.getProductFromCart(correctSmartphone, cart));
-    }
+        @Test
+        void shouldAddProductToCart() {
+            // When
+            cartManager.addProductToCart(correctSmartphone, cart);
 
-    @Test
-    void shouldGetAllProductsFromCart() {
-        // Given
-        List<Product> smartphones = List.of(correctSmartphone, correctSmartphone);
+            // Then
+            assertThat(correctSmartphone).isEqualTo(cartManager.getProductFromCart(correctSmartphone, cart));
+        }
 
-        // When
-        cartManager.addProductToCart(correctSmartphone, cart);
-        cartManager.addProductToCart(correctSmartphone, cart);
+        @Test
+        void shouldRemoveProductFromCart() {
+            // Given
+            cartManager.addProductToCart(correctSmartphone, cart);
 
-        // Then
-        assertThat(smartphones).isEqualTo(cartManager.getAllProductsFromCart(cart));
-    }
+            // When
+            cartManager.removeProductFromCart(correctSmartphone, cart);
 
-    @Test
-    void shouldAddAllProductValuesSuccessfully() {
-        // Given
-        List<Product> smartphones = List.of(correctSmartphone, correctSmartphone);
-        BigDecimal value = smartphones.stream()
-                .map(Product::getPrice)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
+            // Then
+            assertThat(cartManager.findProducFromCart(correctSmartphone, cart)).isEmpty();
+        }
 
-        // When
-        cartManager.addProductToCart(correctSmartphone, cart);
-        cartManager.addProductToCart(correctSmartphone, cart);
+        @Test
+        void shouldGetAllProductsFromCart() {
+            // Given
+            List<Product> smartphones = List.of(correctSmartphone, correctSmartphone);
 
-        // Then
-        assertThat(value).isEqualTo(cart.getValue());
-    }
+            // When
+            cartManager.addProductToCart(correctSmartphone, cart);
+            cartManager.addProductToCart(correctSmartphone, cart);
 
-    @Test
-    void shouldReturnEmptyOptionalWhenCartDoesNotExistInDataBase() {
-        assertThat(inMemoryCartRepository.findCartByID(new UUID(0L, 0L))).isEmpty();
+            // Then
+            assertThat(smartphones).isEqualTo(cartManager.getAllProductsFromCart(cart));
+        }
+
+        @Test
+        void shouldAddAllProductValuesSuccessfully() {
+            // Given
+            List<Product> smartphones = List.of(correctSmartphone, correctSmartphone);
+            BigDecimal value = smartphones.stream()
+                    .map(Product::getPrice)
+                    .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+            // When
+            cartManager.addProductToCart(correctSmartphone, cart);
+            cartManager.addProductToCart(correctSmartphone, cart);
+
+            // Then
+            assertThat(value).isEqualTo(cart.getValue());
+        }
     }
 }

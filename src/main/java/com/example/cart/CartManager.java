@@ -1,9 +1,11 @@
 package com.example.cart;
 
+import com.example.customer.Customer;
 import com.example.product.Product;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 public class CartManager {
     private final InMemoryCartRepository inMemoryCartRepository;
@@ -18,6 +20,10 @@ public class CartManager {
 
     public void removeCartFromDataBase(Cart cart){
         inMemoryCartRepository.deleteByID(cart.getId());
+    }
+
+    public Cart getCartById(UUID id) {
+        return inMemoryCartRepository.getCartByID(id);
     }
 
     public List<Cart> getAllCartsFromDataBase(){

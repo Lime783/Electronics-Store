@@ -1,7 +1,9 @@
 package com.example.product;
 
-import lombok.*;
-import lombok.experimental.SuperBuilder;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
 import java.math.BigDecimal;
 import java.util.Objects;
@@ -51,5 +53,21 @@ public abstract class Product {
         if (amountAvailable <= 0) {
             throw new IllegalArgumentException("amountAvailable cannot be negative: " + amountAvailable);
         }
+    }
+
+    public void addAmountAvailable(int howManyToAdd) {
+        setAmountAvailable(getAmountAvailable() + howManyToAdd);
+    }
+
+    public void subtractAmountAvailable(int howManyToSubtract) {
+        if (getAmountAvailable() < howManyToSubtract) {
+            throw new IllegalArgumentException("Not enough products available: " + getAmountAvailable() + ", want to substract: " + howManyToSubtract);
+        }
+        setAmountAvailable(getAmountAvailable() - howManyToSubtract);
+    }
+
+    public void changePrice(BigDecimal newPrice) {
+        validatePrice(newPrice);
+        setPrice(newPrice);
     }
 }

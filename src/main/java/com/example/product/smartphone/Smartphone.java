@@ -4,14 +4,18 @@ import com.example.product.Product;
 import com.example.product.smartphone.components.Accessory;
 import com.example.product.smartphone.components.BatteryCapacity;
 import com.example.product.smartphone.components.Color;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 import java.math.BigDecimal;
 import java.util.Objects;
 
 @Getter
 @Setter
+@EqualsAndHashCode(callSuper = true)
+@ToString(callSuper = true)
 public class Smartphone extends Product {
     Accessory accessory;
     BatteryCapacity batteryCapacity;
