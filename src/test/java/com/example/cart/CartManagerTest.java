@@ -5,6 +5,7 @@ import com.example.product.smartphone.Smartphone;
 import com.example.product.smartphone.components.Accessory;
 import com.example.product.smartphone.components.BatteryCapacity;
 import com.example.product.smartphone.components.Color;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -12,6 +13,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -21,6 +23,17 @@ class CartManagerTest {
     private InMemoryCartRepository inMemoryCartRepository;
     private CartManager cartManager;
     private Cart cart;
+    private static Product correctSmartphone;
+
+    @BeforeAll
+    static void init() {
+        correctSmartphone = new Smartphone("trapPhone",
+                new BigDecimal("420.00"),
+                10,
+                Accessory.CASE,
+                BatteryCapacity.CAPACITY_1000MAH,
+                Color.RED);
+    }
 
     @BeforeEach
     void setUp() {
@@ -40,40 +53,44 @@ class CartManagerTest {
 
     @Test
     void shouldAddProductToCart() {
-        // Given
-        String name = "trapPhone";
-        BigDecimal price = new BigDecimal("420.00");
-        int amountAvailable = 10;
-        Accessory accessory = Accessory.CASE;
-        BatteryCapacity batteryCapacity = BatteryCapacity.CAPACITY_1000MAH;
-        Color color = Color.RED;
-        Product smartphone = new Smartphone(name, price, amountAvailable, accessory, batteryCapacity, color);
-
         // When
-        cartManager.addProductToCart(smartphone, cart);
+        cartManager.addProductToCart(correctSmartphone, cart);
 
         // Then
-        assertThat(smartphone).isEqualTo(cartManager.getProductFromCart(smartphone, cart));
+        assertThat(correctSmartphone).isEqualTo(cartManager.getProductFromCart(correctSmartphone, cart));
     }
 
     @Test
     void shouldGetAllProductsFromCart() {
         // Given
-        String name = "trapPhone";
-        BigDecimal price = new BigDecimal("420.00");
-        int amountAvailable = 10;
-        Accessory accessory = Accessory.CASE;
-        BatteryCapacity batteryCapacity = BatteryCapacity.CAPACITY_1000MAH;
-        Color color = Color.RED;
-        Product smartphone1 = new Smartphone(name, price, amountAvailable, accessory, batteryCapacity, color);
-        Product smartphone2 = new Smartphone(name, price, amountAvailable, accessory, batteryCapacity, color);
-        List<Product> smartphones = List.of(smartphone1, smartphone2);
+        List<Product> smartphones = List.of(correctSmartphone, correctSmartphone);
 
         // When
-        cartManager.addProductToCart(smartphone1, cart);
-        cartManager.addProductToCart(smartphone2, cart);
+        cartManager.addProductToCart(correctSmartphone, cart);
+        cartManager.addProductToCart(correctSmartphone, cart);
 
         // Then
         assertThat(smartphones).isEqualTo(cartManager.getAllProductsFromCart(cart));
+    }
+
+    @Test
+    void shouldAddAllProductValuesSuccessfully() {
+        // Given
+        List<Product> smartphones = List.of(correctSmartphone, correctSmartphone);
+        BigDecimal value = smartphones.stream()
+                .map(Product::getPrice)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        // When
+        cartManager.addProductToCart(correctSmartphone, cart);
+        cartManager.addProductToCart(correctSmartphone, cart);
+
+        // Then
+        assertThat(value).isEqualTo(cart.getValue());
+    }
+
+    @Test
+    void shouldReturnEmptyOptionalWhenCartDoesNotExistInDataBase() {
+        assertThat(inMemoryCartRepository.findCartByID(new UUID(0L, 0L))).isEmpty();
     }
 }

@@ -6,8 +6,8 @@ import java.util.Optional;
 public class CustomerManager {
     private final InMemoryCustomerRepository customerRepository;
 
-    public CustomerManager() {
-        customerRepository = new InMemoryCustomerRepository();
+    public CustomerManager(InMemoryCustomerRepository customerRepository) {
+        this.customerRepository = customerRepository;
     }
 
     public void addCustomerToDatabase(Customer customer) {

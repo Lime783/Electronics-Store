@@ -43,4 +43,25 @@ public class Order {
                 .map(Product::getPrice)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
+
+    public void confirm() {
+        if (!(getOrderStatus().equals(OrderStatus.PENDING))) {
+            throw new IllegalStateException("Order: " + getId() + " cannot be confirmed, must be pending");
+        }
+        setOrderStatus(OrderStatus.CONFIRMED);
+    }
+
+    public void cancel() {
+        if (!(getOrderStatus().equals(OrderStatus.PENDING) || getOrderStatus().equals(OrderStatus.CONFIRMED))) {
+            throw new IllegalStateException("Order: " + getId() + " cannot be cancelled, must be pending or confirmed");
+        }
+        setOrderStatus(OrderStatus.CANCELLED);
+    }
+
+    public void complete() {
+        if (!(getOrderStatus().equals(OrderStatus.CONFIRMED))) {
+            throw new IllegalStateException("Order: " + getId() + " cannot be completed, must be confirmed");
+        }
+        setOrderStatus(OrderStatus.COMPLETED);
+    }
 }

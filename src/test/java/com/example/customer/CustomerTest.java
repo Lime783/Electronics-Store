@@ -13,6 +13,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class CustomerTest {
 
     private CustomerManager customerManager;
+    private InMemoryCustomerRepository customerRepository;
 
     private static final String firstName = "Jan";
     private static final String lastName = "Chrzan";
@@ -22,7 +23,7 @@ class CustomerTest {
 
     @BeforeEach
     void setUp() {
-        customerManager = new CustomerManager();
+        customerManager = new CustomerManager(customerRepository);
     }
 
     @Test

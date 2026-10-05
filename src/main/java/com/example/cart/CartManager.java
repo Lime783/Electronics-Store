@@ -26,10 +26,12 @@ public class CartManager {
 
     public void addProductToCart(Product product, Cart cart) {
         cart.getProducts().add(product);
+        cart.setValue(cart.getValue().add(product.getPrice()));
     }
 
     public void removeProductFromCart(Product product, Cart cart) {
         cart.getProducts().remove(product);
+        cart.setValue(cart.getValue().subtract(product.getPrice()));
     }
 
     public Optional<Product> findProducFromCart(Product product, Cart cart) {
