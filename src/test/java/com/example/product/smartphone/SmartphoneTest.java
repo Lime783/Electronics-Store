@@ -1,6 +1,5 @@
 package com.example.product.smartphone;
 
-import com.example.product.Product;
 import com.example.product.smartphone.components.Accessory;
 import com.example.product.smartphone.components.BatteryCapacity;
 import com.example.product.smartphone.components.Color;

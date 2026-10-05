@@ -1,7 +1,5 @@
 package com.example.order;
 
-import com.example.customer.Customer;
-
 import java.util.List;
 import java.util.UUID;
 

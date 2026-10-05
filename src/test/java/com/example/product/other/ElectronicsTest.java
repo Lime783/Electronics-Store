@@ -1,9 +1,5 @@
 package com.example.product.other;
 
-import com.example.product.smartphone.Smartphone;
-import com.example.product.smartphone.components.Accessory;
-import com.example.product.smartphone.components.BatteryCapacity;
-import com.example.product.smartphone.components.Color;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;

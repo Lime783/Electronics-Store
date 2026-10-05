@@ -1,6 +1,5 @@
 package com.example.cart;
 
-import com.example.customer.Customer;
 import com.example.product.Product;
 
 import java.util.List;
