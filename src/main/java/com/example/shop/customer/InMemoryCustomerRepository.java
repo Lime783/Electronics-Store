@@ -18,8 +18,8 @@ public class InMemoryCustomerRepository implements CustomerRepository {
 
     @Override
     public void add(Customer customerToAdd) {
-        if (customers.contains(customerToAdd)){
-            throw new DuplicateException("Customer " + customerToAdd.getFirstName() + " " + customerToAdd.getLastName() + " already exists: " + customerToAdd.getId());
+        if (customers.contains(customerToAdd)) {
+            throw new DuplicateException("Customer " + customerToAdd.getFirstName() + " " + customerToAdd.getLastName() + "with phone number " + customerToAdd.getPhoneNumber() + " already exists: " + customerToAdd.getId());
         }
         customers.add(customerToAdd);
     }

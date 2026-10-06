@@ -1,4 +1,4 @@
-package com.example.product.computer;
+package com.example.shop.product.computer;
 
 import com.example.shop.product.computer.Computer;
 import com.example.shop.product.computer.components.PCCase;

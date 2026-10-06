@@ -1,4 +1,4 @@
-package com.example.product;
+package com.example.shop.product;
 
 import com.example.shop.product.InMemoryProductRepository;
 import com.example.shop.product.Product;

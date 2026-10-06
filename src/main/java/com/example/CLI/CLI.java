@@ -24,7 +24,11 @@ import com.example.shop.product.smartphone.components.BatteryCapacity;
 import com.example.shop.product.smartphone.components.Color;
 import lombok.Getter;
 
+import java.io.IOException;
 import java.math.BigDecimal;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Objects;
 import java.util.Scanner;
 import java.util.UUID;
@@ -64,14 +68,23 @@ public class CLI {
         this.productManager = new ProductManager(inMemoryProductRepository);
         this.invoiceManager = new InvoiceManager();
 
+        resetArchive();
         while (true) {
             chooseWhatToDo();
             chooseCategory(scanner.nextLine());
         }
-
     }
 
-    private static void chooseWhatToDo() {
+    private void resetArchive(){
+        Path pathToArchiveTxt = Path.of("archive", "archive.txt");
+        try {
+            Files.writeString(pathToArchiveTxt, "");
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void chooseWhatToDo() {
         System.out.println("""
                 
                 What service do you want to use?
@@ -114,7 +127,7 @@ public class CLI {
 
     private void addCustomer() {
         Customer customer = provideCustomerData();
-        getCustomerRepository().add(customer);
+        customerManager.addCustomerToDatabase(customer);
     }
 
     private Customer provideCustomerData() {
@@ -154,8 +167,7 @@ public class CLI {
     }
 
     private void listAllCustomers() {
-        customerRepository.getAllCustomers()
-                .forEach(System.out::println);
+        customerManager.getAllCustomersFromDatabase().forEach(System.out::println);
     }
 
     private void showProductsCategory() {
@@ -277,7 +289,7 @@ public class CLI {
     }
 
     private void listAllProducts() {
-        productRepository.getAllProducts().forEach(System.out::println);
+        productManager.getAllProductsFromDataBase().forEach(System.out::println);
     }
 
     private void showCartsCategory() {
@@ -299,7 +311,7 @@ public class CLI {
     private void addCart() {
         Cart cart = new Cart();
         System.out.println("Created cart with ID: " + cart.getId());
-        getCartRepository().add(cart);
+        cartManager.addCartToDataBase(cart);
     }
 
     private void deleteCart() {
@@ -313,7 +325,8 @@ public class CLI {
     }
 
     private void listAllCarts() {
-        cartRepository.getAllCarts().forEach(System.out::println);
+
+        cartManager.getAllCartsFromDataBase().forEach(System.out::println);
     }
 
     private void addProductToCart() {
@@ -351,11 +364,11 @@ public class CLI {
         Customer customer = customerManager.getCustomerById(UUID.fromString(scanner.next()));
 
         System.out.print("UUID of cart: ");
-        Cart cart = cartManager.getCartById(UUID.fromString(scanner.nextLine()));
+        Cart cart = cartManager.getCartById(UUID.fromString(scanner.next()));
 
         Order order = new Order(customer, cart);
 
-        getOrderRepository().add(order);
+        orderManager.addOrderToDatabase(order);
     }
 
     private void cancelOrder() {

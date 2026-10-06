@@ -1,10 +1,7 @@
-package com.example.order;
+package com.example.shop.order;
 
 import com.example.shop.cart.Cart;
 import com.example.shop.customer.Customer;
-import com.example.shop.order.InMemoryOrderRepository;
-import com.example.shop.order.Order;
-import com.example.shop.order.OrderManager;
 import com.example.shop.product.Product;
 import com.example.shop.product.computer.Computer;
 import com.example.shop.product.computer.components.PCCase;
@@ -15,7 +12,12 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.io.IOException;
 import java.math.BigDecimal;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -64,5 +66,29 @@ class OrderManagerTest {
     void shouldThrowExceptionWhenThereIsNoCart() {
         assertThatThrownBy(() -> new Order(customer, null))
                 .isInstanceOf(NullPointerException.class);
+    }
+
+    @Test
+    void shouldArchiveOrderSuccessfully() throws IOException {
+        // Given
+        cart.setProducts(List.of(computer));
+        Order order = new Order(customer, cart);
+
+        String expectedTime = order.getOrderDate().truncatedTo(ChronoUnit.SECONDS).toString();
+        String expectedStatus = order.getOrderStatus().toString();
+        String expectedId = order.getId().toString();
+
+        Path archive = Path.of("archive","archive.txt");
+
+        // When
+        orderManager.addOrderToDatabase(order);
+
+        // Then
+        String contentOfArchive = Files.readString(archive, StandardCharsets.UTF_8);
+
+        assertThat(contentOfArchive).containsIgnoringCase(expectedTime)
+                .containsIgnoringCase(expectedStatus)
+                .containsIgnoringCase(expectedId);
+
     }
 }

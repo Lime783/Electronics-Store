@@ -16,13 +16,13 @@ import java.util.UUID;
 @EqualsAndHashCode
 @ToString
 public class Cart {
-    private List<Product> products;
     private final UUID id;
+    private List<Product> products;
     private BigDecimal value;
 
     public Cart() {
-        this.products = new ArrayList<>();
         this.id = UUID.randomUUID();
+        this.products = new ArrayList<>();
         this.value = new BigDecimal(0);
     }
 }

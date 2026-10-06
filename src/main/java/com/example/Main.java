@@ -19,6 +19,7 @@ import com.example.shop.product.smartphone.components.Accessory;
 import com.example.shop.product.smartphone.components.BatteryCapacity;
 import com.example.shop.product.smartphone.components.Color;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -42,7 +43,7 @@ public class Main {
         orderRepository.add(new Order(customer, cart));
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         InMemoryCartRepository cartRepository = new InMemoryCartRepository();
         InMemoryProductRepository productRepository = new InMemoryProductRepository();
         InMemoryCustomerRepository customerRepository = new InMemoryCustomerRepository();

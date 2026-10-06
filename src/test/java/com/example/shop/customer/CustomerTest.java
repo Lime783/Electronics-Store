@@ -1,4 +1,4 @@
-package com.example.customer;
+package com.example.shop.customer;
 
 import com.example.shop.customer.Customer;
 import com.example.shop.customer.CustomerManager;

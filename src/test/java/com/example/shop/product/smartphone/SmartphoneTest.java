@@ -1,4 +1,4 @@
-package com.example.product.smartphone;
+package com.example.shop.product.smartphone;
 
 import com.example.shop.product.smartphone.Smartphone;
 import com.example.shop.product.smartphone.components.Accessory;

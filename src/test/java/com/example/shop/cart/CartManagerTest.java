@@ -1,4 +1,4 @@
-package com.example.cart;
+package com.example.shop.cart;
 
 import com.example.shop.cart.Cart;
 import com.example.shop.cart.CartManager;
