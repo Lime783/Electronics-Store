@@ -1,0 +1,32 @@
+package com.example.shop.product.computer;
+
+import com.example.shop.product.Product;
+import com.example.shop.product.computer.components.PCCase;
+import com.example.shop.product.computer.components.Processor;
+import com.example.shop.product.computer.components.RAM;
+import lombok.*;
+
+import java.math.BigDecimal;
+import java.util.Objects;
+
+@Getter
+@Setter
+@EqualsAndHashCode(callSuper = true)
+@ToString(callSuper = true)
+public class Computer extends Product {
+    private Processor processor;
+    private RAM ram;
+    private PCCase pcCase;
+
+    public Computer(String name, BigDecimal price, int amountAvailable, Processor processor, RAM ram, PCCase pcCase) {
+        super(name, price, amountAvailable);
+
+        Objects.requireNonNull(processor, "processor cannot null");
+        Objects.requireNonNull(ram, "ram cannot null");
+        Objects.requireNonNull(pcCase, "pcCase cannot null");
+
+        this.processor = processor;
+        this.ram = ram;
+        this.pcCase = pcCase;
+    }
+}
