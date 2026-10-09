@@ -2,13 +2,17 @@ package com.example;
 
 import com.example.CLI.CLI;
 import com.example.shop.cart.Cart;
+import com.example.shop.cart.CartManager;
 import com.example.shop.cart.InMemoryCartRepository;
 import com.example.shop.customer.Customer;
+import com.example.shop.customer.CustomerManager;
 import com.example.shop.customer.InMemoryCustomerRepository;
 import com.example.shop.order.InMemoryOrderRepository;
 import com.example.shop.order.Order;
+import com.example.shop.order.OrderManager;
 import com.example.shop.product.InMemoryProductRepository;
 import com.example.shop.product.Product;
+import com.example.shop.product.ProductManager;
 import com.example.shop.product.computer.Computer;
 import com.example.shop.product.computer.components.PCCase;
 import com.example.shop.product.computer.components.Processor;
@@ -43,7 +47,7 @@ public class Main {
         orderRepository.add(new Order(customer, cart));
     }
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
         InMemoryCartRepository cartRepository = new InMemoryCartRepository();
         InMemoryProductRepository productRepository = new InMemoryProductRepository();
         InMemoryCustomerRepository customerRepository = new InMemoryCustomerRepository();

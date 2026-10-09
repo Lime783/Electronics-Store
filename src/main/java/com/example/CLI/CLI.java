@@ -24,14 +24,12 @@ import com.example.shop.product.smartphone.components.BatteryCapacity;
 import com.example.shop.product.smartphone.components.Color;
 import lombok.Getter;
 
-import java.io.IOException;
 import java.math.BigDecimal;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Objects;
 import java.util.Scanner;
 import java.util.UUID;
+
+import static com.example.archive.ArchiveUtils.resetArchive;
 
 public class CLI {
     final Scanner scanner = new Scanner(System.in);
@@ -75,14 +73,6 @@ public class CLI {
         }
     }
 
-    private void resetArchive(){
-        Path pathToArchiveTxt = Path.of("archive", "archive.txt");
-        try {
-            Files.writeString(pathToArchiveTxt, "");
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
 
     private void chooseWhatToDo() {
         System.out.println("""

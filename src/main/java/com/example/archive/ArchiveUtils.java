@@ -9,6 +9,8 @@ import java.nio.file.StandardOpenOption;
 
 public class ArchiveUtils {
 
+    private static final Object LOCK = new Object();
+
     public static void addToArchive(String message) {
         Path pathToArchive = Path.of("archive");
         Path archive = pathToArchive.resolve("archive.txt");
@@ -16,14 +18,24 @@ public class ArchiveUtils {
 
         try {
             Files.createDirectories(pathToArchive);
-
-            String contentOfArchive = Files.readString(archive, StandardCharsets.UTF_8);
-            Files.writeString(archiveTmp, contentOfArchive);
-            Files.writeString(archiveTmp, message + "\n", StandardCharsets.UTF_8, StandardOpenOption.APPEND);
-            Files.move(archiveTmp, archive, StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.ATOMIC_MOVE);
+            synchronized (LOCK){
+                String contentOfArchive = Files.readString(archive, StandardCharsets.UTF_8);
+                Files.writeString(archiveTmp, contentOfArchive);
+                Files.writeString(archiveTmp, message + "\n", StandardCharsets.UTF_8, StandardOpenOption.APPEND);
+                Files.move(archiveTmp, archive, StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.ATOMIC_MOVE);
+            }
         }
         catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    public static void resetArchive(){
+        Path pathToArchiveTxt = Path.of("archive", "archive.txt");
+        try {
+            Files.writeString(pathToArchiveTxt, "");
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 }

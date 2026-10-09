@@ -30,11 +30,13 @@ public class CartManager {
     }
 
     public void addProductToCart(Product product, Cart cart) {
+        product.subtractAmountAvailable(1);
         cart.getProducts().add(product);
         cart.setValue(cart.getValue().add(product.getPrice()));
     }
 
     public void removeProductFromCart(Product product, Cart cart) {
+        product.addAmountAvailable(1);
         cart.getProducts().remove(product);
         cart.setValue(cart.getValue().subtract(product.getPrice()));
     }
