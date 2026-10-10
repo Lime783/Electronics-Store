@@ -2,17 +2,13 @@ package com.example;
 
 import com.example.CLI.CLI;
 import com.example.shop.cart.Cart;
-import com.example.shop.cart.CartManager;
 import com.example.shop.cart.InMemoryCartRepository;
 import com.example.shop.customer.Customer;
-import com.example.shop.customer.CustomerManager;
 import com.example.shop.customer.InMemoryCustomerRepository;
 import com.example.shop.order.InMemoryOrderRepository;
 import com.example.shop.order.Order;
-import com.example.shop.order.OrderManager;
 import com.example.shop.product.InMemoryProductRepository;
 import com.example.shop.product.Product;
-import com.example.shop.product.ProductManager;
 import com.example.shop.product.computer.Computer;
 import com.example.shop.product.computer.components.PCCase;
 import com.example.shop.product.computer.components.Processor;
@@ -23,7 +19,6 @@ import com.example.shop.product.smartphone.components.Accessory;
 import com.example.shop.product.smartphone.components.BatteryCapacity;
 import com.example.shop.product.smartphone.components.Color;
 
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;

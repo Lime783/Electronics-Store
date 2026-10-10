@@ -74,11 +74,12 @@ class CartManagerTest {
         @Test
         void shouldGetAllCartsFromDataBase() {
             // Given
-            List<Cart> carts = new ArrayList<>(List.of(cart, cart));
+            Cart differentCart = new Cart();
+            List<Cart> carts = new ArrayList<>(List.of(cart, differentCart));
 
             // When
             cartManager.addCartToDataBase(cart);
-            cartManager.addCartToDataBase(cart);
+            cartManager.addCartToDataBase(differentCart);
 
             // Then
             assertThat(carts).isEqualTo(inMemoryCartRepository.getAllCarts());

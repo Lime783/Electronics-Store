@@ -2,6 +2,8 @@ package com.example.shop.order;
 
 import com.example.shop.cart.Cart;
 import com.example.shop.customer.Customer;
+import com.example.shop.pricing.PricingPolicy;
+import com.example.shop.pricing.RegularPricing;
 import com.example.shop.product.Product;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -24,19 +26,25 @@ public class Order {
     private final UUID id;
     private final Customer customer;
     private final Cart cart;
-    private final BigDecimal totalPrice;
     private OrderStatus orderStatus;
     private final LocalDateTime orderDate;
+    private PricingPolicy pricingPolicy;
+    private BigDecimal totalPrice;
 
-    public Order(Customer customer, Cart cart) {
+    public Order(Customer customer, Cart cart, LocalDateTime orderDate) {
         requireData(customer, cart);
 
         this.id = UUID.randomUUID();
         this.customer = customer;
         this.cart = cart;
-        this.totalPrice = calculateTotalPrice();
         this.orderStatus = OrderStatus.PENDING;
-        this.orderDate = LocalDateTime.now();
+        this.orderDate = orderDate;
+        this.pricingPolicy = new RegularPricing();
+        this.totalPrice = calculateTotalPrice();
+    }
+
+    public Order(Customer customer, Cart cart) {
+        this(customer, cart, LocalDateTime.now());
     }
 
     private void requireData(Customer customer, Cart cart) {
