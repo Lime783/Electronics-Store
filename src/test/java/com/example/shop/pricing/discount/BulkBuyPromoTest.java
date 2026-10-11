@@ -14,6 +14,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -22,8 +23,10 @@ class BulkBuyPromoTest {
 
     private InMemoryOrderRepository inMemoryOrderRepository;
     private OrderManager orderManager;
-    private Customer customer = new Customer("Jan", "Chrzan", "Jan@Chrzan.pl", "123456", "123456789");
-    private Product computer = new Computer("Komputer", new BigDecimal("100"), 10, new Processor(Processor.Producer.INTEL, Processor.Model.RYZEN_7_7800X3D, 16), new RAM(256, RAM.Producer.CORSAIR, RAM.Model.FURY_BEAST), new PCCase(1000, 1000));
+    private final Customer customer = new Customer("Jan", "Chrzan", "Jan@Chrzan.pl", "123456", "123456789");
+    private final Product computer = new Computer("Komputer", new BigDecimal("100"), 10, new Processor(Processor.Producer.INTEL, Processor.Model.RYZEN_7_7800X3D, 16), new RAM(256, RAM.Producer.CORSAIR, RAM.Model.FURY_BEAST), new PCCase(1000, 1000));
+
+    private final LocalDateTime before4PM = LocalDateTime.of(2026, 6, 7, 15, 0);
     Cart cart = new Cart();
 
     @BeforeEach
@@ -50,7 +53,7 @@ class BulkBuyPromoTest {
     void shouldNotApplyPromoWhenThereAreLessThan3ProductsInCart() {
         // Given
         cart.setProducts(List.of(computer, computer));
-        Order order = new Order(customer, cart);
+        Order order = new Order(customer, cart, before4PM);
 
         // When
         orderManager.addOrderToDatabase(order);

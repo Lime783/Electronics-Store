@@ -1,6 +1,6 @@
 package com.example.shop.product.smartphone;
 
-import com.example.shop.product.smartphone.Smartphone;
+import com.example.exceptions.NegativeValueException;
 import com.example.shop.product.smartphone.components.Accessory;
 import com.example.shop.product.smartphone.components.BatteryCapacity;
 import com.example.shop.product.smartphone.components.Color;
@@ -52,7 +52,7 @@ class SmartphoneTest {
 
         // When and Then
         assertThatThrownBy(() -> new Smartphone(name, price, amountAvailable, accessory, batteryCapacity, color))
-                .isInstanceOf(IllegalArgumentException.class)
+                .isInstanceOf(NegativeValueException.class)
                 .hasMessageContaining("price cannot be negative");
     }
 }

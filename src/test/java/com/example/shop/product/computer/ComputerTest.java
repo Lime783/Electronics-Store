@@ -1,6 +1,6 @@
 package com.example.shop.product.computer;
 
-import com.example.shop.product.computer.Computer;
+import com.example.exceptions.NegativeValueException;
 import com.example.shop.product.computer.components.PCCase;
 import com.example.shop.product.computer.components.Processor;
 import com.example.shop.product.computer.components.RAM;
@@ -52,7 +52,7 @@ class ComputerTest {
 
         // When and Then
         assertThatThrownBy(() -> new Computer(name, price, amountAvailable, processor, ram, pcCase))
-                .isInstanceOf(IllegalArgumentException.class)
+                .isInstanceOf(NegativeValueException.class)
                 .hasMessageContaining("price cannot be negative");
     }
 }

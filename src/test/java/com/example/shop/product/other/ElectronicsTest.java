@@ -1,6 +1,6 @@
 package com.example.shop.product.other;
 
-import com.example.shop.product.other.Electronics;
+import com.example.exceptions.NegativeValueException;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
@@ -37,7 +37,7 @@ class ElectronicsTest {
 
         // When and Then
         assertThatThrownBy(() -> new Electronics(name, price, amountAvailable))
-                .isInstanceOf(IllegalArgumentException.class)
+                .isInstanceOf(NegativeValueException.class)
                 .hasMessageContaining("price cannot be negative");
     }
 }
