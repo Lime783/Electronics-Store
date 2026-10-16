@@ -12,7 +12,7 @@ public class ArchiveUtils {
     private static final Object LOCK = new Object();
 
     public static void addToArchive(String message) {
-        Path pathToArchive = Path.of("archive");
+        Path pathToArchive = Path.of("archive"); // factory method
         Path archive = pathToArchive.resolve("archive.txt");
         Path archiveTmp = pathToArchive.resolve("archive.txt.tmp");
 

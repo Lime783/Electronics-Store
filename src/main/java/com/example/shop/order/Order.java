@@ -2,13 +2,10 @@ package com.example.shop.order;
 
 import com.example.shop.cart.Cart;
 import com.example.shop.customer.Customer;
+import com.example.shop.pricing.Discount;
 import com.example.shop.pricing.PricingPolicy;
-import com.example.shop.pricing.RegularPricing;
 import com.example.shop.product.Product;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -31,6 +28,7 @@ public class Order {
     private PricingPolicy pricingPolicy;
     private BigDecimal totalPrice;
 
+    @Builder // builder
     public Order(Customer customer, Cart cart, LocalDateTime orderDate) {
         requireData(customer, cart);
 
@@ -39,7 +37,7 @@ public class Order {
         this.cart = cart;
         this.orderStatus = OrderStatus.PENDING;
         this.orderDate = orderDate;
-        this.pricingPolicy = new RegularPricing();
+        this.pricingPolicy = Discount.NONE;
         this.totalPrice = calculateTotalPrice();
     }
 

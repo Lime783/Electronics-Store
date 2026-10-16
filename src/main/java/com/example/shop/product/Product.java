@@ -6,6 +6,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import lombok.experimental.SuperBuilder;
 
 import java.math.BigDecimal;
 import java.util.Objects;
@@ -15,6 +16,7 @@ import java.util.UUID;
 @Setter
 @EqualsAndHashCode(of = "name")
 @ToString
+@SuperBuilder
 public abstract class Product {
     private final UUID id;
     private String name;

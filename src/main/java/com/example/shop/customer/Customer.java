@@ -21,6 +21,7 @@ public class Customer {
     private String password;
     private String phoneNumber;
 
+    @Builder
     public Customer(String firstName, String lastName, String email, String password, String phoneNumber) {
         requireAllData(firstName, lastName, email, password, phoneNumber);
         validateAllData(firstName, lastName, email, password, phoneNumber);

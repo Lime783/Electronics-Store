@@ -5,7 +5,6 @@ import com.example.shop.customer.Customer;
 import com.example.shop.order.InMemoryOrderRepository;
 import com.example.shop.order.Order;
 import com.example.shop.order.OrderManager;
-import com.example.shop.pricing.discount.EveningPromo;
 import com.example.shop.product.Product;
 import com.example.shop.product.computer.Computer;
 import com.example.shop.product.computer.components.PCCase;
@@ -19,7 +18,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 class RegularPricingTest {
 
@@ -47,7 +45,7 @@ class RegularPricingTest {
         orderManager.addOrderToDatabase(order);
 
         // Then
-        assertThat(order.getPricingPolicy().getClass()).isEqualTo(RegularPricing.class);
+        assertThat(order.getPricingPolicy()).isEqualTo(Discount.NONE);
         assertThat(order.getTotalPrice()).isEqualTo(new BigDecimal("100.00"));
     }
 }

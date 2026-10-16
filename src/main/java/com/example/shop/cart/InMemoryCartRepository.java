@@ -31,12 +31,9 @@ public class InMemoryCartRepository implements CartRepository {
 
     @Override
     public Optional<Cart> findCartByID(UUID id) {
-        for (Cart cart : carts) {
-            if (cart.getId().equals(id)) {
-                return Optional.of(cart);
-            }
-        }
-        return Optional.empty();
+        return carts.stream()
+                .filter(cart -> cart.getId().equals(id))
+                .findFirst();
     }
 
     @Override

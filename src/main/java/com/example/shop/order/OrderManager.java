@@ -1,11 +1,10 @@
 package com.example.shop.order;
 
-import com.example.shop.pricing.RegularPricing;
-import com.example.shop.pricing.discount.BulkBuyPromo;
-import com.example.shop.pricing.discount.EveningPromo;
+import com.example.shop.pricing.Discount;
 
-import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 
@@ -27,15 +26,12 @@ public class OrderManager {
     }
 
     public void determineBestDiscount(Order order) {
-        boolean isOrderAfter16 = order.getOrderDate().toLocalTime().isAfter(LocalTime.of(16, 0));
-        boolean hasOrder3ProductsOrMore = order.getCart().getProducts().size() >= 3;
-        if (hasOrder3ProductsOrMore) {
-            order.setPricingPolicy(new BulkBuyPromo());
-        } else if (isOrderAfter16) {
-            order.setPricingPolicy(new EveningPromo());
-        } else {
-            order.setPricingPolicy(new RegularPricing());
-        }
+        Discount bestDiscount = Arrays.stream(Discount.values())
+                .filter(discount -> discount.isApplicable(order))
+                .max(Comparator.comparing(Discount::getDiscountRate))
+                .orElse(Discount.NONE);
+
+        order.setPricingPolicy(bestDiscount);
     }
 
     public void removeOrderFromDatabase(Order order) {

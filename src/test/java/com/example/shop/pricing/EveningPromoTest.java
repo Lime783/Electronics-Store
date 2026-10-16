@@ -1,4 +1,4 @@
-package com.example.shop.pricing.discount;
+package com.example.shop.pricing;
 
 import com.example.shop.cart.Cart;
 import com.example.shop.customer.Customer;
@@ -19,13 +19,13 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class BulkBuyPromoTest {
-
+class EveningPromoTest {
     private InMemoryOrderRepository inMemoryOrderRepository;
     private OrderManager orderManager;
-    private final Customer customer = new Customer("Jan", "Chrzan", "Jan@Chrzan.pl", "123456", "123456789");
-    private final Product computer = new Computer("Komputer", new BigDecimal("100"), 10, new Processor(Processor.Producer.INTEL, Processor.Model.RYZEN_7_7800X3D, 16), new RAM(256, RAM.Producer.CORSAIR, RAM.Model.FURY_BEAST), new PCCase(1000, 1000));
+    private Customer customer = new Customer("Jan", "Chrzan", "Jan@Chrzan.pl", "123456", "123456789");
+    private Product computer = new Computer("Komputer", new BigDecimal("100"), 10, new Processor(Processor.Producer.INTEL, Processor.Model.RYZEN_7_7800X3D, 16), new RAM(256, RAM.Producer.CORSAIR, RAM.Model.FURY_BEAST), new PCCase(1000, 1000));
 
+    private final LocalDateTime after4PM = LocalDateTime.of(2026, 6, 7, 17, 0);
     private final LocalDateTime before4PM = LocalDateTime.of(2026, 6, 7, 15, 0);
     Cart cart = new Cart();
 
@@ -36,30 +36,30 @@ class BulkBuyPromoTest {
     }
 
     @Test
-    void shouldApplyPromoWhenThereAreAtLeast3ProductsInCart() {
+    void shouldApplyEveningPromoAfter4PM(){
         // Given
-        cart.setProducts(List.of(computer, computer, computer));
-        Order order = new Order(customer, cart);
+        cart.setProducts(List.of(computer));
+        Order order = new Order(customer, cart, after4PM);
 
         // When
         orderManager.addOrderToDatabase(order);
 
         // Then
-        assertThat(order.getPricingPolicy().getClass()).isEqualTo(BulkBuyPromo.class);
-        assertThat(order.getTotalPrice()).isLessThan(new BigDecimal("240.01"));
+        assertThat(order.getPricingPolicy()).isEqualTo(Discount.EVENING);
+        assertThat(order.getTotalPrice()).isLessThan(new BigDecimal("90.01"));
     }
 
     @Test
-    void shouldNotApplyPromoWhenThereAreLessThan3ProductsInCart() {
+    void shouldNotApplyEveningPromoAfter4PM(){
         // Given
-        cart.setProducts(List.of(computer, computer));
+        cart.setProducts(List.of(computer));
         Order order = new Order(customer, cart, before4PM);
 
         // When
         orderManager.addOrderToDatabase(order);
 
         // Then
-        assertThat(order.getPricingPolicy().getClass()).isNotEqualTo(BulkBuyPromo.class);
-        assertThat(order.getTotalPrice()).isEqualTo(new BigDecimal("200.00"));
+        assertThat(order.getPricingPolicy()).isNotEqualTo(Discount.EVENING);
+        assertThat(order.getTotalPrice()).isEqualTo(new BigDecimal("100.00"));
     }
 }
