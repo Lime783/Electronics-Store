@@ -56,33 +56,21 @@ public class Order {
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
-    public void confirm() {
-        if (!(getOrderStatus().equals(OrderStatus.PENDING))) {
-            throw new IllegalStateException("Order: " + getId() + " cannot be confirmed, must be pending");
-        }
-
+    public void confirm() { // state
+        setOrderStatus(orderStatus.transitionTo(OrderStatus.CONFIRMED));
         String messageForArchiving = "%s - CONFIRMED order with id %s ".formatted(getOrderDate().truncatedTo(ChronoUnit.SECONDS), getId());
         addToArchive(messageForArchiving);
-        setOrderStatus(OrderStatus.CONFIRMED);
     }
 
     public void cancel() {
-        if (!(getOrderStatus().equals(OrderStatus.PENDING) || getOrderStatus().equals(OrderStatus.CONFIRMED))) {
-            throw new IllegalStateException("Order: " + getId() + " cannot be cancelled, must be pending or confirmed");
-        }
-
+        setOrderStatus(orderStatus.transitionTo(OrderStatus.CANCELLED));
         String messageForArchiving = "%s - CANCELLED order with id %s ".formatted(getOrderDate().truncatedTo(ChronoUnit.SECONDS), getId());
         addToArchive(messageForArchiving);
-        setOrderStatus(OrderStatus.CANCELLED);
     }
 
     public void complete() {
-        if (!(getOrderStatus().equals(OrderStatus.CONFIRMED))) {
-            throw new IllegalStateException("Order: " + getId() + " cannot be completed, must be confirmed");
-        }
-
+        setOrderStatus(orderStatus.transitionTo(OrderStatus.COMPLETED));
         String messageForArchiving = "%s - COMPLETED order with id %s ".formatted(getOrderDate().truncatedTo(ChronoUnit.SECONDS), getId());
         addToArchive(messageForArchiving);
-        setOrderStatus(OrderStatus.COMPLETED);
     }
 }
