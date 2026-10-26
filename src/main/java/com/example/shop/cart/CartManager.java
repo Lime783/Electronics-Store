@@ -57,9 +57,4 @@ public class CartManager {
     public List<Product> getAllProductsFromCart(Cart cart) {
         return cart.getProducts();
     }
-
-    public void listAllProductsFromCart(Cart cart) {
-        getAllProductsFromCart(cart)
-                .forEach(System.out::println);
-    }
 }

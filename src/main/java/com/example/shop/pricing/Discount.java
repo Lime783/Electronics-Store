@@ -52,8 +52,4 @@ public enum Discount implements PricingPolicy { // strategy
     Discount(String description) {
         this.description = description;
     }
-
-    public String description() {
-        return description;
-    }
 }

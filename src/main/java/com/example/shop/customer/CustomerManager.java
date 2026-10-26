@@ -19,27 +19,11 @@ public class CustomerManager {
         customerRepository.deleteByID(customer.getId());
     }
 
-    public Optional<Customer> findCustomerById(UUID id) {
-        return customerRepository.findCustomerByID(id);
-    }
-
     public Customer getCustomerById(UUID id) {
         return customerRepository.getCustomerByID(id);
     }
 
     public List<Customer> getAllCustomersFromDatabase() {
         return customerRepository.getAllCustomers();
-    }
-
-    public void changeCustomerEmail(Customer customer, String newEmail) {
-        customer.changeEmail(newEmail);
-    }
-
-    public void changeCustomerPhoneNumber(Customer customer, String newPhoneNumber) {
-        customer.changePhoneNumber(newPhoneNumber);
-    }
-
-    public void changeCustomerPassword(Customer customer, String newPassword) {
-        customer.changePassword(newPassword);
     }
 }
