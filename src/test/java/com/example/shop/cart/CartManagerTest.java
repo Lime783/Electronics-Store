@@ -1,14 +1,12 @@
 package com.example.shop.cart;
 
-import com.example.shop.cart.Cart;
-import com.example.shop.cart.CartManager;
-import com.example.shop.cart.InMemoryCartRepository;
+import com.example.exceptions.NotEnoughProductsException;
 import com.example.shop.product.Product;
+import com.example.shop.product.other.Electronics;
 import com.example.shop.product.smartphone.Smartphone;
 import com.example.shop.product.smartphone.components.Accessory;
 import com.example.shop.product.smartphone.components.BatteryCapacity;
 import com.example.shop.product.smartphone.components.Color;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -18,9 +16,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @ExtendWith(MockitoExtension.class)
 class CartManagerTest {
@@ -30,18 +30,14 @@ class CartManagerTest {
     private Cart cart;
     private static Product correctSmartphone;
 
-    @BeforeAll
-    static void init() {
-        correctSmartphone = new Smartphone("trapPhone",
-                new BigDecimal("420.00"),
-                10,
-                Accessory.CASE,
-                BatteryCapacity.CAPACITY_1000MAH,
-                Color.RED);
-    }
-
     @BeforeEach
     void setUp() {
+        correctSmartphone = new Smartphone("trapPhone",
+                new BigDecimal("420.00"),
+                2,
+                Set.of(Accessory.CASE),
+                BatteryCapacity.CAPACITY_1000MAH,
+                Color.RED);
         cart = new Cart();
         inMemoryCartRepository = new InMemoryCartRepository();
         cartManager = new CartManager(inMemoryCartRepository);
@@ -154,6 +150,43 @@ class CartManagerTest {
 
             // Then
             assertThat(value).isEqualTo(cart.getValue());
+        }
+
+        @Test
+        void shouldNotAddAProductToCartWhenThereAreNoMoreAvailableProducts() {
+            // When
+            for (int i = 0; i < 2; i++) {
+                cartManager.addProductToCart(correctSmartphone, cart);
+            }
+
+            // Then
+            assertThatThrownBy(() -> cartManager.addProductToCart(correctSmartphone, cart))
+                    .isInstanceOf(NotEnoughProductsException.class);
+        }
+
+        @Test
+        void shouldNotDeleteProductFromCartWhichIsNotInThisCart() {
+            // Given
+            Electronics nonExistentElectronics = new Electronics("mp3", new BigDecimal("42.0"), 1);
+            cartManager.addProductToCart(correctSmartphone, cart);
+
+            // When and then
+            assertThatThrownBy(() -> cartManager.removeProductFromCart(nonExistentElectronics, cart))
+                    .isInstanceOf(IllegalArgumentException.class);
+            assertThat(cart.getProducts()).contains(correctSmartphone);
+        }
+
+        @Test
+        void shouldCalculateValueOfCartAfterRemovingProduct() {
+            // Given
+            cartManager.addProductToCart(correctSmartphone, cart);
+            cartManager.addProductToCart(correctSmartphone, cart);
+
+            // When
+            cartManager.removeProductFromCart(correctSmartphone, cart);
+
+            // Then
+            assertThat(cart.getValue()).isEqualTo(correctSmartphone.getPrice());
         }
     }
 }

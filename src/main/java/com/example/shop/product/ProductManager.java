@@ -5,9 +5,9 @@ import java.util.Optional;
 import java.util.UUID;
 
 public class ProductManager {
-    private final InMemoryProductRepository productRepository;
+    private final ProductRepository productRepository;
 
-    public ProductManager(InMemoryProductRepository productRepository) {
+    public ProductManager(ProductRepository productRepository) {
         this.productRepository = productRepository;
     }
 

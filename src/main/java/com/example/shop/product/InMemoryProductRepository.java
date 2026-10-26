@@ -1,37 +1,44 @@
 package com.example.shop.product;
 
 import com.example.exceptions.DuplicateException;
-import lombok.Getter;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
-@Getter
 public class InMemoryProductRepository implements ProductRepository {
-    private final List<Product> products;
+
+    private final ConcurrentHashMap<UUID, Product> products;
 
     public InMemoryProductRepository() {
-        products = new ArrayList<>();
+        products = new ConcurrentHashMap<>();
     }
 
     public void add(Product productToAdd) {
-        if (products.contains(productToAdd)) {
-            throw new DuplicateException("Product " + productToAdd.getName() + " already exists: " + productToAdd.getId());
+        checkForDuplicates(productToAdd);
+        products.put(productToAdd.getId(), productToAdd);
+    }
+
+    private void checkForDuplicates(Product productToAdd) {
+        Optional<Product> duplicate = products.values().stream()
+                .filter(product -> product.getId().equals(productToAdd.getId()))
+                .findFirst();
+
+        if (duplicate.isPresent()) {
+            throw new DuplicateException(productToAdd.getName() + " already exists");
         }
-        products.add(productToAdd);
     }
 
     @Override
     public void deleteByID(UUID id) {
-        products.removeIf(product -> product.getId().equals(id));
+        products.remove(id);
     }
 
     @Override
     public Optional<Product> findProductByID(UUID id) {
-        return products.stream()
-                .filter(productToFind -> productToFind.getId().equals(id))
+        return products.values().stream()
+                .filter(product -> product.getId().equals(id))
                 .findFirst();
     }
 
@@ -42,6 +49,6 @@ public class InMemoryProductRepository implements ProductRepository {
 
     @Override
     public List<Product> getAllProducts() {
-        return products;
+        return List.copyOf(products.values());
     }
 }

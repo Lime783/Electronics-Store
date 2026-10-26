@@ -21,7 +21,8 @@ public record Processor(Producer producer, Model model, int cores) {
         CORE_I5_14600K("Core I5-14600K"),
         CORE_I7_14700K("Core I7-14700K"),
         RYZEN_7_7800X3D("RYZEN-77800X3D"),
-        RYZEN_9_7950X("RYZEN-97950X"),;
+        RYZEN_9_7950X("RYZEN-97950X"),
+        ;
 
         private final String model;
 

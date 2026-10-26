@@ -27,6 +27,7 @@ import lombok.Getter;
 import java.math.BigDecimal;
 import java.util.Objects;
 import java.util.Scanner;
+import java.util.Set;
 import java.util.UUID;
 
 import static com.example.archive.ArchiveUtils.resetArchive;
@@ -73,7 +74,6 @@ public class CLI {
         }
     }
 
-
     private void chooseWhatToDo() {
         System.out.println("""
                 
@@ -112,6 +112,7 @@ public class CLI {
             case "1" -> addCustomer();
             case "2" -> deleteCustomer();
             case "3" -> listAllCustomers();
+            default -> System.out.println("Unknown command, try again");
         }
     }
 
@@ -147,7 +148,7 @@ public class CLI {
     private void deleteCustomer() {
         System.out.print("UUID of customer to delete: ");
 
-        UUID id = UUID.fromString(scanner.next());
+        UUID id = readUUID();
 
         customerManager.removeCustomerFromDatabase(
                 customerManager.getCustomerById(id)
@@ -171,6 +172,7 @@ public class CLI {
             case "1" -> addProduct();
             case "2" -> deleteProduct();
             case "3" -> listAllProducts();
+            default -> System.out.println("Unknown command, try again");
         }
     }
 
@@ -185,6 +187,7 @@ public class CLI {
             case "1" -> addComputer();
             case "2" -> addSmartphone();
             case "3" -> addOther();
+            default -> System.out.println("Unknown command, try again");
         }
     }
 
@@ -244,7 +247,7 @@ public class CLI {
         int amountAvailable = Integer.parseInt(scanner.nextLine());
 
         System.out.print("Accessory (ex. CASE): ");
-        Accessory accessory = Accessory.valueOf(scanner.nextLine());
+        Accessory accessories = Accessory.valueOf(scanner.nextLine());
 
         System.out.print("Battery Capacity (ex, CAPACITY_1000MAH): ");
         BatteryCapacity batteryCapacity = BatteryCapacity.valueOf(scanner.nextLine());
@@ -252,7 +255,7 @@ public class CLI {
         System.out.print("Color (ex, RED): ");
         Color color = Color.valueOf(scanner.nextLine());
 
-        productManager.addProductToDataBase(new Smartphone(name, price, amountAvailable, accessory, batteryCapacity, color));
+        productManager.addProductToDataBase(new Smartphone(name, price, amountAvailable, Set.of(accessories), batteryCapacity, color));
     }
 
     private void addOther() {
@@ -271,10 +274,8 @@ public class CLI {
     private void deleteProduct() {
         System.out.print("UUID of product to delete: ");
 
-        UUID id = UUID.fromString(scanner.next());
-
         productManager.removeProductFromDataBase(
-                productManager.getProductById(id)
+                productManager.getProductById(readUUID())
         );
     }
 
@@ -295,6 +296,7 @@ public class CLI {
             case "2" -> deleteCart();
             case "3" -> listAllCarts();
             case "4" -> addProductToCart();
+            default -> System.out.println("Unknown command, try again");
         }
     }
 
@@ -307,10 +309,8 @@ public class CLI {
     private void deleteCart() {
         System.out.print("UUID of cart to delete: ");
 
-        UUID id = UUID.fromString(scanner.next());
-
         cartManager.removeCartFromDataBase(
-                cartManager.getCartById(id)
+                cartManager.getCartById(readUUID())
         );
     }
 
@@ -321,10 +321,10 @@ public class CLI {
 
     private void addProductToCart() {
         System.out.println("UUID of product to add: ");
-        Product product = productManager.getProductById(UUID.fromString(scanner.next()));
+        Product product = productManager.getProductById(readUUID());
 
         System.out.println("UUID of cart to add to: ");
-        Cart cart = cartManager.getCartById(UUID.fromString(scanner.next()));
+        Cart cart = cartManager.getCartById(readUUID());
 
         cartManager.addProductToCart(product, cart);
     }
@@ -346,15 +346,16 @@ public class CLI {
             case "4" -> confirmOrder();
             case "5" -> completeOrder();
             case "6" -> createInvoice();
+            default -> System.out.println("Unknown command, try again");
         }
     }
 
     private void createOrder() {
         System.out.print("UUID of customer: ");
-        Customer customer = customerManager.getCustomerById(UUID.fromString(scanner.next()));
+        Customer customer = customerManager.getCustomerById(readUUID());
 
         System.out.print("UUID of cart: ");
-        Cart cart = cartManager.getCartById(UUID.fromString(scanner.next()));
+        Cart cart = cartManager.getCartById(readUUID());
 
         Order order = new Order(customer, cart);
 
@@ -364,7 +365,7 @@ public class CLI {
     private void cancelOrder() {
         System.out.print("UUID of order to cancel: ");
 
-        Order orderToCancel = orderManager.getOrderById(UUID.fromString(scanner.next()));
+        Order orderToCancel = orderManager.getOrderById(readUUID());
 
         orderToCancel.cancel();
     }
@@ -373,13 +374,13 @@ public class CLI {
         orderRepository.getAllOrders().forEach(System.out::println);
     }
 
-    private void confirmOrder(){
+    private void confirmOrder() {
         System.out.print("UUID of order to pay for: ");
 
-        Order orderToConfirm = orderManager.getOrderById(UUID.fromString(scanner.next()));
+        Order orderToConfirm = orderManager.getOrderById(readUUID());
 
         System.out.print("Total to pay: " + orderToConfirm.getTotalPrice() + ", would you like to pay? (Y/N)");
-        if (scanner.next().equalsIgnoreCase("Y")) {
+        if (scanner.nextLine().equalsIgnoreCase("Y")) {
             orderToConfirm.confirm();
             System.out.print("Payment successful for order: " + orderToConfirm.getId());
         } else {
@@ -387,74 +388,78 @@ public class CLI {
         }
     }
 
-    private void completeOrder(){
+    private void completeOrder() {
         System.out.print("UUID of order to complete: ");
 
-        Order orderToComplete = orderManager.getOrderById(UUID.fromString(scanner.next()));
+        Order orderToComplete = orderManager.getOrderById(readUUID());
 
         orderToComplete.complete();
     }
 
-    private void createInvoice(){
+    private void createInvoice() {
         System.out.print("UUID of order to generate invoice for: ");
 
-        Order orderToInvoice = orderManager.getOrderById(UUID.fromString(scanner.next()));
+        Order orderToInvoice = orderManager.getOrderById(readUUID());
 
         invoiceManager.generateInvoice(orderToInvoice);
     }
 
+    private UUID readUUID() {
+        return UUID.fromString(scanner.nextLine());
+    }
+
     private void showHelp() {
         System.out.println("""
-            
-            ==================== HELP ====================
-            
-            MAIN MENU
-            1 / CUSTOMERS  - manage customers
-            2 / PRODUCTS   - manage products
-            3 / CARTS      - manage shopping carts
-            4 / ORDERS     - manage orders
-            5             - list everything
-            HELP          - show this help
-            QUIT          - exit the application
-            
-            CUSTOMERS
-            1 - add customer
-            2 - delete customer
-            3 - list all customers
-            
-            PRODUCTS
-            1 - add product
-            2 - delete product
-            3 - list all products
-            
-            Product types:
-            1 - Computer
-            2 - Smartphone
-            3 - Other
-            
-            CARTS
-            1 - create cart
-            2 - delete cart
-            3 - list all carts
-            4 - add product to cart
-            
-            ORDERS
-            1 - create order
-            2 - cancel order
-            3 - list all orders
-            4 - pay / confirm order
-            5 - complete order
-            
-            ORDER FLOW
-            Create order -> Pay / Confirm -> Complete
-            An order can also be cancelled.
-            
-            TIP
-            UUIDs are required when deleting or modifying
-            customers, products, carts and orders.
-            
-            ==============================================
-            """);
+                
+                ==================== HELP ====================
+                
+                MAIN MENU
+                1 / CUSTOMERS  - manage customers
+                2 / PRODUCTS   - manage products
+                3 / CARTS      - manage shopping carts
+                4 / ORDERS     - manage orders
+                5             - list everything
+                HELP          - show this help
+                QUIT          - exit the application
+                
+                CUSTOMERS
+                1 - add customer
+                2 - delete customer
+                3 - list all customers
+                
+                PRODUCTS
+                1 - add product
+                2 - delete product
+                3 - list all products
+                
+                Product types:
+                1 - Computer
+                2 - Smartphone
+                3 - Other
+                
+                CARTS
+                1 - create cart
+                2 - delete cart
+                3 - list all carts
+                4 - add product to cart
+                
+                ORDERS
+                1 - create order
+                2 - cancel order
+                3 - list all orders
+                4 - pay / confirm order
+                5 - complete order
+                
+                ORDER FLOW
+                Create order -> Pay / Confirm -> Complete
+                An order can also be cancelled.
+                
+                TIP
+                UUIDs are required when deleting or modifying
+                customers, products, carts and orders.
+                
+                ==============================================
+                """);
     }
 
 

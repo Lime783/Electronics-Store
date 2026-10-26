@@ -30,7 +30,7 @@ public enum OrderStatus { // state
 
     abstract Set<OrderStatus> next();
 
-    OrderStatus transitionTo(OrderStatus target) {
+    public OrderStatus transitionTo(OrderStatus target) {
         if (!(next().contains(target))) {
             throw new IllegalStateException(
                     "cannot go from %s to %s (allowed: %s)".formatted(this, target, next()));

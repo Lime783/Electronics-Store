@@ -78,7 +78,7 @@ class OrderManagerTest {
         String expectedStatus = order.getOrderStatus().toString();
         String expectedId = order.getId().toString();
 
-        Path archive = Path.of("archive","archive.txt");
+        Path archive = Path.of("archive", "archive.txt");
 
         // When
         orderManager.addOrderToDatabase(order);
@@ -89,6 +89,61 @@ class OrderManagerTest {
         assertThat(contentOfArchive).containsIgnoringCase(expectedTime)
                 .containsIgnoringCase(expectedStatus)
                 .containsIgnoringCase(expectedId);
+    }
 
+    @Test
+    void shouldChangeOrderStatusToConfirmed() {
+        // Given
+        cart.setProducts(List.of(computer));
+        Order order = new Order(customer, cart);
+        orderManager.addOrderToDatabase(order);
+
+        // When
+        order.confirm();
+
+        // Then
+        assertThat(order.getOrderStatus()).isEqualTo(OrderStatus.CONFIRMED);
+    }
+
+    @Test
+    void shouldChangeOrderStatusToCancelled() {
+        // Given
+        cart.setProducts(List.of(computer));
+        Order order = new Order(customer, cart);
+        orderManager.addOrderToDatabase(order);
+
+        // When
+        order.cancel();
+
+        // Then
+        assertThat(order.getOrderStatus()).isEqualTo(OrderStatus.CANCELLED);
+    }
+
+    @Test
+    void shouldChangeOrderStatusToCompleted() {
+        // Given
+        cart.setProducts(List.of(computer));
+        Order order = new Order(customer, cart);
+        orderManager.addOrderToDatabase(order);
+
+        // When
+        order.confirm();
+        order.complete();
+
+        // Then
+        assertThat(order.getOrderStatus()).isEqualTo(OrderStatus.COMPLETED);
+    }
+
+    @Test
+    void shouldNotChangeOrderStatusToIllegalState() {
+        // Given
+        cart.setProducts(List.of(computer));
+        Order order = new Order(customer, cart);
+        orderManager.addOrderToDatabase(order);
+
+        // When and Then
+        assertThatThrownBy(order::complete)
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessageContaining(order.getOrderStatus().toString());
     }
 }

@@ -1,8 +1,6 @@
 package com.example.shop.customer;
 
-import com.example.shop.customer.Customer;
-import com.example.shop.customer.CustomerManager;
-import com.example.shop.customer.InMemoryCustomerRepository;
+import com.example.exceptions.DuplicateException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -74,5 +72,16 @@ class CustomerTest {
         assertThatThrownBy(() -> new Customer(firstName, lastName, email, password, "123"))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("Invalid phone number");
+    }
+
+    @Test
+    void shouldThrowExceptionWhenTryingToAddCustomerToDatabaseThatAlreadyExists() {
+        // Given
+        Customer customer = new Customer(firstName, lastName, email, password, phoneNumber);
+        customerManager.addCustomerToDatabase(customer);
+
+        // When and Then
+        assertThatThrownBy(() -> customerManager.addCustomerToDatabase(customer))
+                .isInstanceOf(DuplicateException.class);
     }
 }

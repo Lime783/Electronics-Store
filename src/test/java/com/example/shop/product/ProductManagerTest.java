@@ -1,8 +1,5 @@
 package com.example.shop.product;
 
-import com.example.shop.product.InMemoryProductRepository;
-import com.example.shop.product.Product;
-import com.example.shop.product.ProductManager;
 import com.example.shop.product.smartphone.Smartphone;
 import com.example.shop.product.smartphone.components.Accessory;
 import com.example.shop.product.smartphone.components.BatteryCapacity;
@@ -12,6 +9,7 @@ import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 import java.util.Optional;
+import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -19,7 +17,7 @@ class ProductManagerTest {
 
     private ProductManager productManager;
     private InMemoryProductRepository productRepository;
-    private static final Product correctSmartphone = new Smartphone("trapPhone", new BigDecimal("4200"), 1, Accessory.CASE, BatteryCapacity.CAPACITY_1000MAH, Color.BLACK);
+    private static final Product correctSmartphone = new Smartphone("trapPhone", new BigDecimal("4200"), 1, Set.of(Accessory.CASE), BatteryCapacity.CAPACITY_1000MAH, Color.BLACK);
 
     @BeforeEach
     void setUp() {

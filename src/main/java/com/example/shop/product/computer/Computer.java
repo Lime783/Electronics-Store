@@ -4,7 +4,10 @@ import com.example.shop.product.Product;
 import com.example.shop.product.computer.components.PCCase;
 import com.example.shop.product.computer.components.Processor;
 import com.example.shop.product.computer.components.RAM;
-import lombok.*;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 
 import java.math.BigDecimal;

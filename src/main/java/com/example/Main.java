@@ -2,13 +2,17 @@ package com.example;
 
 import com.example.CLI.CLI;
 import com.example.shop.cart.Cart;
+import com.example.shop.cart.CartRepository;
 import com.example.shop.cart.InMemoryCartRepository;
 import com.example.shop.customer.Customer;
+import com.example.shop.customer.CustomerRepository;
 import com.example.shop.customer.InMemoryCustomerRepository;
 import com.example.shop.order.InMemoryOrderRepository;
 import com.example.shop.order.Order;
+import com.example.shop.order.OrderRepository;
 import com.example.shop.product.InMemoryProductRepository;
 import com.example.shop.product.Product;
+import com.example.shop.product.ProductRepository;
 import com.example.shop.product.computer.Computer;
 import com.example.shop.product.computer.components.PCCase;
 import com.example.shop.product.computer.components.Processor;
@@ -22,15 +26,16 @@ import com.example.shop.product.smartphone.components.Color;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 public class Main {
 
-    public static void generateInitialData(InMemoryCustomerRepository customerRepository, InMemoryCartRepository cartRepository, InMemoryOrderRepository orderRepository, InMemoryProductRepository productRepository) {
+    public static void generateInitialData(CustomerRepository customerRepository, CartRepository cartRepository, OrderRepository orderRepository, ProductRepository productRepository) {
         Customer customer = new Customer("Jan", "Chrzan", "Jan@Chrzan.pl", "123456", "123456789");
         customerRepository.add(customer);
         customerRepository.add(new Customer("Rychu", "Peja", "Rychu@Chrzan.pl", "654321", "0987654321"));
 
-        Product smartphone = new Smartphone("trapPhone", new BigDecimal("4200"), 1, Accessory.CASE, BatteryCapacity.CAPACITY_1000MAH, Color.BLACK);
+        Product smartphone = new Smartphone("trapPhone", new BigDecimal("4200"), 1, Set.of(Accessory.CASE), BatteryCapacity.CAPACITY_1000MAH, Color.BLACK);
         productRepository.add(smartphone);
         productRepository.add(new Computer("Komputer dysk 1000", new BigDecimal("4200"), 10, new Processor(Processor.Producer.INTEL, Processor.Model.RYZEN_7_7800X3D, 16), new RAM(16, RAM.Producer.CORSAIR, RAM.Model.FURY_BEAST), new PCCase(20, 30)));
         productRepository.add(new Electronics("mp4", new BigDecimal("200"), 100));

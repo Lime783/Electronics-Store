@@ -8,54 +8,49 @@ import java.math.BigDecimal;
 @Getter
 public enum Discount implements PricingPolicy { // strategy
 
-    NONE("-0% always!", BigDecimal.ZERO) {
+    NONE("-0% always!") {
         @Override
         public boolean isApplicable(Order order) {
             return true;
         }
 
         @Override
-        public void calculatePrice(Order order) {
-            setDiscount(order, getDiscountRate());
+        public BigDecimal discountRate() {
+            return BigDecimal.ZERO;
         }
     },
 
-    EVENING("-15% after 4PM", new BigDecimal("0.15")) {
+    EVENING("-15% after 4PM") {
         @Override
         public boolean isApplicable(Order order) {
-            return order.getOrderDate().getHour() >= 16;
+            return order.getOrderDate().getHour() >= EVENING_HOUR_PROMO_THRESHOLD;
         }
 
         @Override
-        public void calculatePrice(Order order) {
-            setDiscount(order, getDiscountRate());
+        public BigDecimal discountRate() {
+            return new BigDecimal("0.15");
         }
     },
 
-    BULK("-25% for at least 3 pcs", new BigDecimal("0.25")) {
+    BULK("-25% for at least 3 pcs") {
         @Override
         public boolean isApplicable(Order order) {
-            return order.getCart().getProducts().size() >= 3;
+            return order.getCart().getProducts().size() >= BULK_BUY_PROMO_THRESHOLD;
         }
 
         @Override
-        public void calculatePrice(Order order) {
-            setDiscount(order, getDiscountRate());
+        public BigDecimal discountRate() {
+            return new BigDecimal("0.25");
         }
     };
 
-    private static final BigDecimal basePrice = new BigDecimal("1.00");
-
-    private static void setDiscount(Order order, BigDecimal discount) {
-        order.setTotalPrice(order.getTotalPrice().multiply(basePrice.subtract(discount)));
-    }
+    private static final int EVENING_HOUR_PROMO_THRESHOLD = 16;
+    private static final int BULK_BUY_PROMO_THRESHOLD = 3;
 
     private final String description;
-    private final BigDecimal discountRate;
 
-    Discount(String description, BigDecimal discountRate) {
+    Discount(String description) {
         this.description = description;
-        this.discountRate = discountRate;
     }
 
     public String description() {

@@ -12,6 +12,7 @@ import lombok.experimental.SuperBuilder;
 
 import java.math.BigDecimal;
 import java.util.Objects;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -19,15 +20,15 @@ import java.util.Objects;
 @ToString(callSuper = true)
 @SuperBuilder
 public class Smartphone extends Product {
-    Accessory accessory;
-    BatteryCapacity batteryCapacity;
-    Color color;
+    private Set<Accessory> accessory;
+    private BatteryCapacity batteryCapacity;
+    private Color color;
 
-    public Smartphone(String name, BigDecimal price, int amountAvailable, Accessory accessory, BatteryCapacity batteryCapacity, Color color) {
+    public Smartphone(String name, BigDecimal price, int amountAvailable, Set<Accessory> accessory, BatteryCapacity batteryCapacity, Color color) {
         super(name, price, amountAvailable);
 
-        Objects.requireNonNull(name, "name cannot null");
-        Objects.requireNonNull(price, "price cannot null");
+        Objects.requireNonNull(batteryCapacity, "battery cannot null");
+        Objects.requireNonNull(color, "color cannot null");
 
         this.accessory = accessory;
         this.batteryCapacity = batteryCapacity;

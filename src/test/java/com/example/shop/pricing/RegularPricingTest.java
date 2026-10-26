@@ -5,6 +5,7 @@ import com.example.shop.customer.Customer;
 import com.example.shop.order.InMemoryOrderRepository;
 import com.example.shop.order.Order;
 import com.example.shop.order.OrderManager;
+import com.example.shop.order.OrderRepository;
 import com.example.shop.product.Product;
 import com.example.shop.product.computer.Computer;
 import com.example.shop.product.computer.components.PCCase;
@@ -21,7 +22,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class RegularPricingTest {
 
-    private InMemoryOrderRepository inMemoryOrderRepository;
+    private OrderRepository inMemoryOrderRepository;
     private OrderManager orderManager;
     private Customer customer = new Customer("Jan", "Chrzan", "Jan@Chrzan.pl", "123456", "123456789");
     private Product computer = new Computer("Komputer", new BigDecimal("100"), 10, new Processor(Processor.Producer.INTEL, Processor.Model.RYZEN_7_7800X3D, 16), new RAM(256, RAM.Producer.CORSAIR, RAM.Model.FURY_BEAST), new PCCase(1000, 1000));
@@ -36,7 +37,7 @@ class RegularPricingTest {
     }
 
     @Test
-    void shouldNotApplyAnyDiscount(){
+    void shouldNotApplyAnyDiscount() {
         // Given
         cart.setProducts(List.of(computer));
         Order order = new Order(customer, cart, before4PM);

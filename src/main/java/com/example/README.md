@@ -1,109 +1,107 @@
-# 1. Opis projektu
+# 1. Project Description
 
-Celem projektu jest stworzenie kompletnego systemu sklepu internetowego umożliwiającego przeglądanie i zakup produktów
-elektronicznych, takich jak komputery, smartfony i inne urządzenia elektroniczne.
+The aim of the project is to create a complete online store system that allows customers to browse and purchase
+electronic products, such as computers, smartphones, and other electronic devices.
 
-Klienci mogą przeglądać dostępne produkty, dodawać je do koszyka, usuwać z niego oraz składać zamówienia z fakturą lub
-bez niej.
+Customers can browse available products, add them to their shopping carts, remove products from their carts, and place
+orders with or without an invoice.
 
-## 1.1. Kategorie produktów
+## 1.1. Product Categories
 
-| Kategoria produktu | Dodatkowe właściwości                                   |
-|--------------------|---------------------------------------------------------|
-| Komputer           | Procesor, ilość pamięci RAM, obudowa                    |
-| Smartfon           | Kolor, pojemność baterii, dodatkowe akcesoria, np. etui |
-| Inna elektronika   | Podstawowe parametry                                    |
+| Product Category  | Additional Properties                                              |
+|-------------------|--------------------------------------------------------------------|
+| Computer          | Processor, amount of RAM, case                                     |
+| Smartphone        | Color, battery capacity, additional accessories, e.g. a phone case |
+| Other Electronics | Basic specifications                                               |
 
-Każdy produkt posiada również identyfikator, nazwę, cenę oraz dostępną ilość.
+Each product also has an identifier, name, price, and available quantity.
 
-## 1.2. Obsługa klientów i koszyka
+## 1.2. Customer and Shopping Cart Management
 
-Klienci mogą korzystać z funkcjonalności sklepu, zarządzać swoim koszykiem oraz składać zamówienia. Koszyk umożliwia
-przechowywanie wybranych produktów i sprawdzanie łącznej wartości zakupów.
+Customers can use the store's functionality, manage their shopping carts, and place orders. The shopping cart allows
+customers to store selected products and check the total value of their purchases.
 
-| Element            | Opis                                                     |
-|--------------------|----------------------------------------------------------|
-| Klient             | Adres e-mail, numer telefonu i hasło                     |
-| Koszyk             | Unikalny identyfikator, lista produktów i łączna wartość |
-| Produkty w koszyku | Możliwość dodawania, przeglądania i usuwania             |
+| Element       | Description                                          |
+|---------------|------------------------------------------------------|
+| Customer      | Email address, phone number, and password            |
+| Shopping Cart | Unique identifier, list of products, and total value |
+| Cart Items    | Ability to add, view, and remove products            |
 
-## 1.3. Proces realizacji zamówień
+## 1.3. Order Fulfillment Process
 
-Każde zamówienie zawiera informacje o kliencie, przypisanym koszyku oraz dacie złożenia.
+Each order contains information about the customer, the associated shopping cart, and the order placement date.
 
-Zamówienia posiadają cztery możliwe stany:
+Orders can have four possible statuses:
 
-| Stan zamówienia | Opis                                                     |
-|-----------------|----------------------------------------------------------|
-| `OCZEKUJĄCE`    | Stan początkowy, nadawany po złożeniu zamówienia         |
-| `POTWIERDZONE`  | Zamówienie potwierdzone po symulowanym uiszczeniu opłaty |
-| `ANULOWANE`     | Zamówienie zostało anulowane                             |
-| `SKOŃCZONE`     | Realizacja zamówienia została zakończona                 |
+| Order Status | Description                                                    |
+|--------------|----------------------------------------------------------------|
+| `PENDING`    | Initial status assigned when an order is placed                |
+| `CONFIRMED`  | The order is confirmed after a simulated payment has been made |
+| `CANCELLED`  | The order has been cancelled                                   |
+| `COMPLETED`  | The order fulfillment process has been completed               |
 
-### Przebieg realizacji zamówienia
+### Order Fulfillment Workflow
 
 ``` text
-OCZEKUJĄCE
+PENDING
      |
-     | Symulacja płatności
+     | Payment simulation
      v
-POTWIERDZONE
+CONFIRMED
      |
-     | Zakończenie realizacji
+     | Completion of fulfillment
      v
-SKOŃCZONE
+COMPLETED
 ````
 
-Zamówienie rozpoczyna proces od stanu oczekującego. Po symulacji płatności może zostać potwierdzone, a po zakończeniu
-realizacji otrzymuje stan skończony. Zamówienie może również zostać anulowane zgodnie z regułami biznesowymi systemu.
+The order starts in the pending state. After payment simulation, it can be confirmed, and once fulfillment is complete,
+its status changes to completed. An order can also be cancelled in accordance with the system's business rules.
 
-Wszystkie zmiany stanów są zapisywane w pliku `archive.txt` wraz z opisem zamówienia i datą zmiany.
+All status changes are recorded in the `archive.txt` file, together with a description of the order and the date of the
+change.
 
-## 1.4. System rabatowy
+## 1.4. Discount System
 
-Sklep posiada system rabatowy, który automatycznie dobiera korzystniejszą promocję na podstawie godziny zakupu oraz
-liczby produktów w zamówieniu.
+The store has a discount system that automatically selects the most advantageous promotion based on the time of purchase
+and the number of products in the order.
 
-| Warunek                   | Wysokość rabatu |
-|---------------------------|-----------------|
-| Zakup po godzinie 16:00   | 15%             |
-| Zakup minimum 3 produktów | 25%             |
-| Spełnienie obu warunków   | 25%             |
+| Condition                       | Discount |
+|---------------------------------|----------|
+| Purchase after 4:00 PM          | 15%      |
+| Purchase of at least 3 products | 25%      |
 
-W przypadku spełnienia obu warunków stosowany jest rabat w wysokości 25%, ponieważ jest korzystniejszy dla klienta.
-Rabaty nie sumują się.
+Discounts are not cumulative. The system has been designed with future development in mind and allows additional
+promotions to be introduced.
 
-System został zaprojektowany z myślą o dalszym rozwoju i umożliwia dodawanie kolejnych promocji.
+## 1.5. Multithreading and Archiving
 
-## 1.5. Wielowątkowość i archiwizacja
+The system supports the simultaneous processing of multiple orders using multithreading. Each order can be processed
+independently of the others.
 
-System umożliwia równoczesną realizację wielu zamówień z wykorzystaniem wielowątkowości. Każde zamówienie może być
-przetwarzane niezależnie od pozostałych.
+Key requirements:
 
-Najważniejsze założenia:
+- Independent processing of multiple orders.
+- Safe handling of concurrent writes to the archive.
 
-- Niezależna realizacja wielu zamówień.
-- Bezpieczna obsługa równoczesnych zapisów do archiwum.
+## 1.6. User Interface
 
-## 1.6. Interfejs użytkownika
+The system can be tested intuitively using a CLI (Command-Line Interface), which allows users to operate the store from
+a terminal.
 
-System można intuicyjnie testować za pomocą interfejsu CLI (Command-Line Interface), który umożliwia obsługę sklepu z
-poziomu terminala.
-
-| Funkcjonalność CLI       | Możliwe działanie                                                |
+| CLI Functionality        | Available Operations                                             |
 |--------------------------|------------------------------------------------------------------|
-| Przeglądanie produktów   | Wyświetlanie dostępnych produktów i ich parametrów               |
-| Obsługa koszyka          | Dodawanie i usuwanie produktów oraz sprawdzanie wartości koszyka |
-| Składanie zamówień       | Tworzenie zamówień z fakturą lub bez niej                        |
-| Obsługa płatności        | Symulowanie płatności i potwierdzanie zamówień                   |
-| Zarządzanie zamówieniami | Sprawdzanie i zmienianie stanów zamówień                         |
+| Product Browsing         | Displaying available products and their specifications           |
+| Shopping Cart Management | Adding and removing products and checking the cart's total value |
+| Order Placement          | Creating orders with or without an invoice                       |
+| Payment Handling         | Simulating payments and confirming orders                        |
+| Order Management         | Checking and changing order statuses                             |
 
-# 2. Zastosowane rozwiązania techniczne
+# 2. Technical Solutions Used
 
-## 2.1. Dziedziczenie i modelowanie produktów
+## 2.1. Inheritance and Product Modeling
 
-W projekcie zastosowano dziedziczenie, w którym konkretne kategorie produktów rozszerzają abstrakcyjną klasę `Product`.
-Klasa bazowa definiuje wspólne właściwości produktów, takie jak identyfikator, nazwa, cena i dostępna ilość.
+The project uses inheritance, in which specific product categories extend the abstract `Product` class. The base class
+defines common product properties, such as the identifier, name, price, and available quantity.
 
 ``` java
 public abstract class Product {
@@ -114,7 +112,7 @@ public abstract class Product {
 }
 ```
 
-Przykładowa klasa `Smartphone` rozszerza klasę `Product` o właściwości charakterystyczne dla smartfonów.
+For example, the `Smartphone` class extends the `Product` class with properties specific to smartphones.
 
 ``` java
 public class Smartphone extends Product {
@@ -124,20 +122,20 @@ public class Smartphone extends Product {
 }
 ```
 
-Takie rozwiązanie ułatwia dodawanie kolejnych kategorii produktów bez konieczności modyfikowania wspólnej klasy bazowej.
+This approach makes it easier to add new product categories without modifying the shared base class.
 
-## 2.2. Precyzja obliczeń finansowych
+## 2.2. Financial Calculation Precision
 
-Do przechowywania cen oraz wykonywania obliczeń finansowych wykorzystywany jest typ `BigDecimal` zamiast `double`.
-Pozwala to uniknąć typowych błędów precyzji zmiennoprzecinkowej podczas obliczania cen i rabatów.
+The `BigDecimal` type is used to store prices and perform financial calculations instead of `double`. This helps avoid
+common floating-point precision errors when calculating prices and discounts.
 
-## 2.3. Interfejsy repozytoriów
+## 2.3. Repository Interfaces
 
-W projekcie zastosowano interfejsy określające metody, które muszą zostać zaimplementowane przez repozytoria
-odpowiedzialne za zarządzanie danymi.
+The project uses interfaces to define the methods that must be implemented by repositories responsible for data
+management.
 
-Przykładem jest interfejs `CartRepository`, który definiuje operacje dodawania, usuwania, wyszukiwania i pobierania
-koszyków.
+An example is the `CartRepository` interface, which defines operations for adding, deleting, searching for, and
+retrieving shopping carts.
 
 ``` java
 public interface CartRepository {
@@ -153,27 +151,27 @@ public interface CartRepository {
 }
 ```
 
-Oddzielenie interfejsów od ich implementacji ułatwia rozwój projektu, testowanie oraz ewentualną zmianę sposobu
-przechowywania danych.
+Separating interfaces from their implementations facilitates project development and testing, as well as potential
+changes to the data storage mechanism.
 
-## 2.4. Własne wyjątki
+## 2.4. Custom Exceptions
 
-W celu czytelniejszej obsługi błędów zastosowano własne wyjątki o jednoznacznych nazwach, wskazujących rodzaj
-występującego problemu.
+Custom exceptions with descriptive names are used to make error handling clearer and indicate the type of problem that
+has occurred.
 
-Przykładem jest `DuplicateException`, wykorzystywany do reprezentowania błędów związanych z duplikatami.
+An example is `DuplicateException`, which is used to represent errors related to duplicate entries.
 
 ``` java
 public class DuplicateException extends RuntimeException {...}
 ```
 
-Takie podejście ułatwia rozpoznawanie błędów i pozwala dostosować ich obsługę do konkretnych sytuacji występujących w
-systemie.
+This approach makes errors easier to identify and allows their handling to be tailored to specific situations within the
+system.
 
-## 2.5. Wielowątkowość
+## 2.5. Multithreading
 
-System wykorzystuje wielowątkowość do równoczesnej realizacji wielu zamówień. Każde zamówienie może być przetwarzane
-niezależnie, co pozwala symulować równoległą obsługę klientów.
+The system uses multithreading to process multiple orders simultaneously. Each order can be processed independently,
+allowing the system to simulate parallel customer service.
 
 ``` java
 try (ExecutorService pool = Executors.newFixedThreadPool(8)){
@@ -181,10 +179,10 @@ try (ExecutorService pool = Executors.newFixedThreadPool(8)){
     }
 ```
 
-## 2.6. Atomowa aktualizacja archiwum
+## 2.6. Atomic Archive Updates
 
-Zmiany stanów zamówień są zapisywane w pliku `archive.txt`. W celu ograniczenia ryzyka udostępnienia niekompletnego
-pliku zastosowano mechanizm zapisu do pliku tymczasowego, a następnie atomowej podmiany pliku docelowego.
+Order status changes are saved to the `archive.txt` file. To reduce the risk of exposing an incomplete file, a mechanism
+is used that writes data to a temporary file and then atomically replaces the target file.
 
 ``` java
 Files.writeString(
@@ -202,7 +200,8 @@ Files.move(
 );
 ```
 
-## 2.7. Rozszerzalny system rabatowy
+## 2.7. Extensible Discount System
 
-Mechanizm rabatowy został zaprojektowany tak, aby można było rozszerzać go o kolejne promocje. System analizuje warunki
-zakupów i wybiera najkorzystniejszy dostępny rabat, zamiast sumować wszystkie spełnione promocje.
+The discount mechanism has been designed to support the addition of further promotions. The system evaluates the
+purchase conditions and selects the most advantageous available discount instead of adding together all applicable
+promotions.

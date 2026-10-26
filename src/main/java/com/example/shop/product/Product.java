@@ -4,7 +4,6 @@ import com.example.exceptions.NegativeValueException;
 import com.example.exceptions.NotEnoughProductsException;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 
@@ -13,8 +12,7 @@ import java.util.Objects;
 import java.util.UUID;
 
 @Getter
-@Setter
-@EqualsAndHashCode(of = "name")
+@EqualsAndHashCode(of = "id")
 @ToString
 @SuperBuilder
 public abstract class Product {
@@ -60,18 +58,13 @@ public abstract class Product {
     }
 
     public void addAmountAvailable(int howManyToAdd) {
-        setAmountAvailable(getAmountAvailable() + howManyToAdd);
+        amountAvailable += howManyToAdd;
     }
 
     public void subtractAmountAvailable(int howManyToSubtract) {
         if (getAmountAvailable() < howManyToSubtract) {
             throw new NotEnoughProductsException("Not enough products available: " + getAmountAvailable() + ", want to substract: " + howManyToSubtract);
         }
-        setAmountAvailable(getAmountAvailable() - howManyToSubtract);
-    }
-
-    public void changePrice(BigDecimal newPrice) {
-        validatePrice(newPrice);
-        setPrice(newPrice);
+        amountAvailable -= howManyToSubtract;
     }
 }

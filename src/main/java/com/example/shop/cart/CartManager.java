@@ -7,17 +7,17 @@ import java.util.Optional;
 import java.util.UUID;
 
 public class CartManager {
-    private final InMemoryCartRepository inMemoryCartRepository;
+    private final CartRepository inMemoryCartRepository;
 
-    public CartManager(InMemoryCartRepository inMemoryCartRepository) {
+    public CartManager(CartRepository inMemoryCartRepository) {
         this.inMemoryCartRepository = inMemoryCartRepository;
     }
 
-    public void addCartToDataBase(Cart cart){
+    public void addCartToDataBase(Cart cart) {
         inMemoryCartRepository.add(cart);
     }
 
-    public void removeCartFromDataBase(Cart cart){
+    public void removeCartFromDataBase(Cart cart) {
         inMemoryCartRepository.deleteByID(cart.getId());
     }
 
@@ -25,7 +25,7 @@ public class CartManager {
         return inMemoryCartRepository.getCartByID(id);
     }
 
-    public List<Cart> getAllCartsFromDataBase(){
+    public List<Cart> getAllCartsFromDataBase() {
         return inMemoryCartRepository.getAllCarts();
     }
 
@@ -36,9 +36,12 @@ public class CartManager {
     }
 
     public void removeProductFromCart(Product product, Cart cart) {
-        product.addAmountAvailable(1);
-        cart.getProducts().remove(product);
-        cart.setValue(cart.getValue().subtract(product.getPrice()));
+        if (cart.getProducts().remove(product)) {
+            product.addAmountAvailable(1);
+            cart.setValue(cart.getValue().subtract(product.getPrice()));
+        } else {
+            throw new IllegalArgumentException("Product: " + product.getName() + " not found in cart: " + cart.getId());
+        }
     }
 
     public Optional<Product> findProducFromCart(Product product, Cart cart) {

@@ -38,7 +38,7 @@ class InvoiceTest {
     }
 
     @Test
-    void shouldCreateInvoice(){
+    void shouldCreateInvoice() {
         // Given
         cart.setProducts(List.of(computer));
         Order order = new Order(customer, cart);

@@ -43,6 +43,6 @@ public class InMemoryCartRepository implements CartRepository {
 
     @Override
     public List<Cart> getAllCarts() {
-        return carts;
+        return List.copyOf(carts);
     }
 }

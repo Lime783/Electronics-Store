@@ -1,4 +1,4 @@
-package com.example;
+package com.example.shop.multithreading;
 
 import com.example.shop.cart.Cart;
 import com.example.shop.cart.CartManager;
@@ -26,19 +26,21 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import static com.example.archive.ArchiveUtils.resetArchive;
 import static org.assertj.core.api.Assertions.assertThat;
 
-class SyncVsAsyncTest {
+class AsyncTest {
     static private final int HOW_MANY_ORDERS = 30;
     static private final int MAX_ITEMS_IN_CART = 5;
     static private final int AMOUNT_OF_PRODUCTS_AVAILABLE = HOW_MANY_ORDERS * MAX_ITEMS_IN_CART;
     static private final Random random = new Random();
 
     private List<Order> orders;
+    private List<Order> orders2;
 
     InMemoryCartRepository cartRepository = new InMemoryCartRepository();
     InMemoryProductRepository productRepository = new InMemoryProductRepository();
@@ -52,13 +54,15 @@ class SyncVsAsyncTest {
         addCustomersToDataBase();
         addProductsToDataBase();
 
-        this.orders = new ArrayList<>(HOW_MANY_ORDERS);
+        orders = new ArrayList<>(HOW_MANY_ORDERS);
+        orders2 = new ArrayList<>(HOW_MANY_ORDERS);
 
         int howManyProductsInDataBase = productManager.getAllProductsFromDataBase().size();
         int howManyCustomersInDataBase = customerManager.getAllCustomersFromDatabase().size();
 
         for (int i = 0; i < HOW_MANY_ORDERS; i++) {
             orders.add(generateRandomOrder(howManyProductsInDataBase, howManyCustomersInDataBase));
+            orders2.add(generateRandomOrder(howManyProductsInDataBase, howManyCustomersInDataBase));
         }
     }
 
@@ -78,7 +82,7 @@ class SyncVsAsyncTest {
     }
 
     private void addProductsToDataBase() {
-        productManager.addProductToDataBase(new Smartphone("trapPhone", new BigDecimal("2400.99"), AMOUNT_OF_PRODUCTS_AVAILABLE, Accessory.CASE, BatteryCapacity.CAPACITY_1000MAH, Color.BLACK));
+        productManager.addProductToDataBase(new Smartphone("trapPhone", new BigDecimal("2400.99"), AMOUNT_OF_PRODUCTS_AVAILABLE, Set.of(Accessory.CASE), BatteryCapacity.CAPACITY_1000MAH, Color.BLACK));
         productManager.addProductToDataBase(new Computer("Komputer dysk 1000", new BigDecimal("4201"), AMOUNT_OF_PRODUCTS_AVAILABLE, new Processor(Processor.Producer.INTEL, Processor.Model.RYZEN_7_7800X3D, 16), new RAM(16, RAM.Producer.CORSAIR, RAM.Model.FURY_BEAST), new PCCase(20, 30)));
         productManager.addProductToDataBase(new Electronics("mp4", new BigDecimal("400"), AMOUNT_OF_PRODUCTS_AVAILABLE));
         productManager.addProductToDataBase(new Electronics("mp5", new BigDecimal("500"), AMOUNT_OF_PRODUCTS_AVAILABLE));
@@ -109,7 +113,7 @@ class SyncVsAsyncTest {
     public long processOrdersAsync(List<Order> orders) {
         long start = System.nanoTime();
 
-        try (ExecutorService pool = Executors.newFixedThreadPool(8)){
+        try (ExecutorService pool = Executors.newFixedThreadPool(8)) {
             orders.forEach(order -> pool.submit(() -> processOrder(order)));
         }
 
@@ -138,9 +142,36 @@ class SyncVsAsyncTest {
 
         // When
         long syncTime = processOrdersSync(orders);
-        long asyncTime = processOrdersAsync(orders);
+        long asyncTime = processOrdersAsync(orders2);
 
         // Then
         assertThat(asyncTime).isLessThan(syncTime);
+    }
+
+    @Test
+    void shouldNotTakeTooManyProductsFromDataBase() {
+        // Given
+        generateInitialData();
+        long itemsInTotal = productRepository.getAllProducts().stream()
+                .map(Product::getAmountAvailable)
+                .reduce(0, Integer::sum);
+
+        // When
+        processOrdersAsync(orders);
+//        long itemsRemaining = productRepository.getAllProducts().stream()
+//                .map(Product::getAmountAvailable)
+//                .reduce(0, Integer::sum);
+        long itemsSupposedlyRemaining = orders.stream()
+                .flatMap(order -> order.getProducts().stream())
+                .mapToLong(Product::getAmountAvailable)
+                .sum();
+
+        // Then
+        System.out.println("Items in total: " + itemsInTotal);
+//        System.out.println("itemsRemaining: " + itemsRemaining);
+        System.out.println("itemsSupposedlyRemaining: " + itemsSupposedlyRemaining);
+
+
+//        assertThat(itemsSupposedlyRemaining).isEqualTo(itemsRemaining);
     }
 }

@@ -1,15 +1,17 @@
 package com.example.shop.customer;
 
 
-import lombok.*;
+import lombok.Builder;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.ToString;
 
 import java.util.Objects;
 import java.util.UUID;
 
 @Getter
-@Setter
 @EqualsAndHashCode(exclude = {"id", "email", "password"})
-@ToString
+@ToString(exclude = {"password"})
 public class Customer {
     private static final String PHONE_PATTERN = "^\\+?[0-9][0-9\\s-]{7,19}$";
     private static final String EMAIL_PATTERN = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$";
@@ -51,32 +53,47 @@ public class Customer {
     }
 
     private static void validateFirstName(String firstName) {
-        if (firstName.length() < 2){
-            throw new IllegalArgumentException("First name must be at least 2 characters long: "  + firstName);
+        if (firstName.length() < 2) {
+            throw new IllegalArgumentException("First name must be at least 2 characters long: " + firstName);
         }
     }
 
     private static void validateLastName(String lastName) {
-        if (lastName.length() < 2){
+        if (lastName.length() < 2) {
             throw new IllegalArgumentException("Last name must be at least 2 characters long: " + lastName);
         }
     }
 
     private static void validateEmail(String email) {
-        if (!(email.matches(EMAIL_PATTERN))){
+        if (!(email.matches(EMAIL_PATTERN))) {
             throw new IllegalArgumentException("Invalid email: " + email);
         }
     }
 
     private static void validatePassword(String password) {
-        if (password.length() < 6){
-            throw new IllegalArgumentException("Password must be at least 6 characters long: " + password);
+        if (password.length() < 6) {
+            throw new IllegalArgumentException("Password must be at least 6 characters long");
         }
     }
 
     private static void validatePhoneNumber(String phoneNumber) {
-        if (!(phoneNumber.matches(PHONE_PATTERN))){
+        if (!(phoneNumber.matches(PHONE_PATTERN))) {
             throw new IllegalArgumentException("Invalid phone number: " + phoneNumber);
         }
+    }
+
+    public void changeEmail(String newEmail) {
+        validateEmail(newEmail);
+        this.email = newEmail;
+    }
+
+    public void changePhoneNumber(String newPhoneNumber) {
+        validatePhoneNumber(newPhoneNumber);
+        this.phoneNumber = newPhoneNumber;
+    }
+
+    public void changePassword(String newPassword) {
+        validatePassword(newPassword);
+        this.password = newPassword;
     }
 }

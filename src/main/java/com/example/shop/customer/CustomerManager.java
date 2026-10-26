@@ -5,9 +5,9 @@ import java.util.Optional;
 import java.util.UUID;
 
 public class CustomerManager {
-    private final InMemoryCustomerRepository customerRepository;
+    private final CustomerRepository customerRepository;
 
-    public CustomerManager(InMemoryCustomerRepository customerRepository) {
+    public CustomerManager(CustomerRepository customerRepository) {
         this.customerRepository = customerRepository;
     }
 
@@ -32,14 +32,14 @@ public class CustomerManager {
     }
 
     public void changeCustomerEmail(Customer customer, String newEmail) {
-        customer.setEmail(newEmail);
+        customer.changeEmail(newEmail);
     }
 
     public void changeCustomerPhoneNumber(Customer customer, String newPhoneNumber) {
-        customer.setPhoneNumber(newPhoneNumber);
+        customer.changePhoneNumber(newPhoneNumber);
     }
 
     public void changeCustomerPassword(Customer customer, String newPassword) {
-        customer.setPassword(newPassword);
+        customer.changePassword(newPassword);
     }
 }

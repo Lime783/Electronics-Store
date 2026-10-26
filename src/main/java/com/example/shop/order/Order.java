@@ -5,24 +5,29 @@ import com.example.shop.customer.Customer;
 import com.example.shop.pricing.Discount;
 import com.example.shop.pricing.PricingPolicy;
 import com.example.shop.product.Product;
-import lombok.*;
+import lombok.Builder;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.ToString;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
 import static com.example.archive.ArchiveUtils.addToArchive;
 
 @Getter
-@Setter
 @EqualsAndHashCode(exclude = "id")
 @ToString
 public class Order {
     private final UUID id;
     private final Customer customer;
     private final Cart cart;
+    private final List<Product> products;
     private OrderStatus orderStatus;
     private final LocalDateTime orderDate;
     private PricingPolicy pricingPolicy;
@@ -32,13 +37,18 @@ public class Order {
     public Order(Customer customer, Cart cart, LocalDateTime orderDate) {
         requireData(customer, cart);
 
+        if (cart.getProducts().isEmpty()) {
+            throw new IllegalStateException("Cannot create an order with empty cart");
+        }
+
         this.id = UUID.randomUUID();
         this.customer = customer;
         this.cart = cart;
+        this.products = List.copyOf(cart.getProducts());
         this.orderStatus = OrderStatus.PENDING;
         this.orderDate = orderDate;
         this.pricingPolicy = Discount.NONE;
-        this.totalPrice = calculateTotalPrice();
+        this.totalPrice = BigDecimal.ZERO;
     }
 
     public Order(Customer customer, Cart cart) {
@@ -50,27 +60,38 @@ public class Order {
         Objects.requireNonNull(cart, "Cart cannot be null");
     }
 
-    private BigDecimal calculateTotalPrice() {
-        return cart.getProducts().stream()
+    public void calculateTotalPrice() {
+        totalPrice = products.stream()
                 .map(Product::getPrice)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
+                .reduce(BigDecimal.ZERO, BigDecimal::add)
+                .multiply(BigDecimal.ONE.subtract(pricingPolicy.discountRate()))
+                .setScale(2, RoundingMode.HALF_UP);
     }
 
     public void confirm() { // state
-        setOrderStatus(orderStatus.transitionTo(OrderStatus.CONFIRMED));
-        String messageForArchiving = "%s - CONFIRMED order with id %s ".formatted(getOrderDate().truncatedTo(ChronoUnit.SECONDS), getId());
-        addToArchive(messageForArchiving);
+        changeStatusTo(OrderStatus.CONFIRMED);
     }
 
     public void cancel() {
-        setOrderStatus(orderStatus.transitionTo(OrderStatus.CANCELLED));
-        String messageForArchiving = "%s - CANCELLED order with id %s ".formatted(getOrderDate().truncatedTo(ChronoUnit.SECONDS), getId());
-        addToArchive(messageForArchiving);
+        changeStatusTo(OrderStatus.CANCELLED);
+        restoreProductsFromCart();
+    }
+
+    private void restoreProductsFromCart() {
+        products.forEach(product -> product.addAmountAvailable(1));
     }
 
     public void complete() {
-        setOrderStatus(orderStatus.transitionTo(OrderStatus.COMPLETED));
-        String messageForArchiving = "%s - COMPLETED order with id %s ".formatted(getOrderDate().truncatedTo(ChronoUnit.SECONDS), getId());
+        changeStatusTo(OrderStatus.COMPLETED);
+    }
+
+    private void changeStatusTo(OrderStatus nextOrderStatus) {
+        orderStatus = orderStatus.transitionTo(nextOrderStatus);
+        String messageForArchiving = "%s - %s order with id %s ".formatted(getOrderDate().truncatedTo(ChronoUnit.SECONDS), nextOrderStatus, getId());
         addToArchive(messageForArchiving);
+    }
+
+    void setPricingPolicy(Discount pricingPolicy) {
+        this.pricingPolicy = pricingPolicy;
     }
 }

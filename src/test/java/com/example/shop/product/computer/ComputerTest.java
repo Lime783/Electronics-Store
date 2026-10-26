@@ -19,7 +19,7 @@ class ComputerTest {
     private Computer computer;
 
     @Test
-    void shouldCreateComputerSuccessfully(){
+    void shouldCreateComputerSuccessfully() {
         // Given
         String name = "Konkuter dysk tysionc";
         BigDecimal price = new BigDecimal("100");

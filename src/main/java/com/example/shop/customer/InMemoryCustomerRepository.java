@@ -43,6 +43,6 @@ public class InMemoryCustomerRepository implements CustomerRepository {
 
     @Override
     public List<Customer> getAllCustomers() {
-        return customers;
+        return List.copyOf(customers);
     }
 }

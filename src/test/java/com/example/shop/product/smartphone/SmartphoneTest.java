@@ -9,6 +9,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
+import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -24,18 +25,18 @@ class SmartphoneTest {
         String name = "trapPhone";
         BigDecimal price = new BigDecimal("420.00");
         int amountAvailable = 10;
-        Accessory accessory = Accessory.CASE;
+        Set<Accessory> accessories = Set.of(Accessory.CASE, Accessory.SCREEN_PROTECTION);
         BatteryCapacity batteryCapacity = BatteryCapacity.CAPACITY_1000MAH;
         Color color = Color.RED;
 
         // When
-        smartphone = new Smartphone(name, price, amountAvailable, accessory, batteryCapacity, color);
+        smartphone = new Smartphone(name, price, amountAvailable, accessories, batteryCapacity, color);
 
         // Then
         assertThat(smartphone.getName()).isEqualTo(name);
         assertThat(smartphone.getPrice()).isEqualTo(price);
         assertThat(smartphone.getAmountAvailable()).isEqualTo(amountAvailable);
-        assertThat(smartphone.getAccessory()).isEqualTo(accessory);
+        assertThat(smartphone.getAccessory()).isEqualTo(accessories);
         assertThat(smartphone.getBatteryCapacity()).isEqualTo(batteryCapacity);
         assertThat(smartphone.getColor()).isEqualTo(color);
     }
@@ -51,7 +52,7 @@ class SmartphoneTest {
         Color color = Color.RED;
 
         // When and Then
-        assertThatThrownBy(() -> new Smartphone(name, price, amountAvailable, accessory, batteryCapacity, color))
+        assertThatThrownBy(() -> new Smartphone(name, price, amountAvailable, Set.of(accessory), batteryCapacity, color))
                 .isInstanceOf(NegativeValueException.class)
                 .hasMessageContaining("price cannot be negative");
     }
