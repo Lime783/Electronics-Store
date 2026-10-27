@@ -1,0 +1,37 @@
+package com.example.shop.product.smartphone;
+
+import com.example.shop.product.Product;
+import com.example.shop.product.smartphone.components.Accessory;
+import com.example.shop.product.smartphone.components.BatteryCapacity;
+import com.example.shop.product.smartphone.components.Color;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+import lombok.experimental.SuperBuilder;
+
+import java.math.BigDecimal;
+import java.util.Objects;
+import java.util.Set;
+
+@Getter
+@Setter
+@EqualsAndHashCode(callSuper = true)
+@ToString(callSuper = true)
+@SuperBuilder
+public class Smartphone extends Product {
+    private Set<Accessory> accessory;
+    private BatteryCapacity batteryCapacity;
+    private Color color;
+
+    public Smartphone(String name, BigDecimal price, int amountAvailable, Set<Accessory> accessory, BatteryCapacity batteryCapacity, Color color) {
+        super(name, price, amountAvailable);
+
+        Objects.requireNonNull(batteryCapacity, "battery cannot null");
+        Objects.requireNonNull(color, "color cannot null");
+
+        this.accessory = accessory;
+        this.batteryCapacity = batteryCapacity;
+        this.color = color;
+    }
+}
