@@ -13,6 +13,7 @@ import lombok.ToString;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Objects;
@@ -34,7 +35,7 @@ public class Order {
     private BigDecimal totalPrice;
 
     @Builder // builder
-    public Order(Customer customer, Cart cart, LocalDateTime orderDate) {
+    public Order(Customer customer, Cart cart, ZonedDateTime orderDate) {
         requireData(customer, cart);
 
         if (cart.getProducts().isEmpty()) {
@@ -46,13 +47,13 @@ public class Order {
         this.cart = cart;
         this.products = List.copyOf(cart.getProducts());
         this.orderStatus = OrderStatus.PENDING;
-        this.orderDate = orderDate;
+        this.orderDate = orderDate.toLocalDateTime();
         this.pricingPolicy = Discount.NONE;
         this.totalPrice = BigDecimal.ZERO;
     }
 
     public Order(Customer customer, Cart cart) {
-        this(customer, cart, LocalDateTime.now());
+        this(customer, cart, ZonedDateTime.now());
     }
 
     private void requireData(Customer customer, Cart cart) {

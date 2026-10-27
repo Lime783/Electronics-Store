@@ -40,7 +40,7 @@ class AsyncTest {
     static private final Random random = new Random();
 
     private List<Order> orders;
-    private List<Order> orders2;
+    private List<Order> ordersOther;
 
     InMemoryCartRepository cartRepository = new InMemoryCartRepository();
     InMemoryProductRepository productRepository = new InMemoryProductRepository();
@@ -55,14 +55,14 @@ class AsyncTest {
         addProductsToDataBase();
 
         orders = new ArrayList<>(HOW_MANY_ORDERS);
-        orders2 = new ArrayList<>(HOW_MANY_ORDERS);
+        ordersOther = new ArrayList<>(HOW_MANY_ORDERS);
 
         int howManyProductsInDataBase = productManager.getAllProductsFromDataBase().size();
         int howManyCustomersInDataBase = customerManager.getAllCustomersFromDatabase().size();
 
         for (int i = 0; i < HOW_MANY_ORDERS; i++) {
             orders.add(generateRandomOrder(howManyProductsInDataBase, howManyCustomersInDataBase));
-            orders2.add(generateRandomOrder(howManyProductsInDataBase, howManyCustomersInDataBase));
+            ordersOther.add(generateRandomOrder(howManyProductsInDataBase, howManyCustomersInDataBase));
         }
     }
 
@@ -142,7 +142,7 @@ class AsyncTest {
 
         // When
         long syncTime = processOrdersSync(orders);
-        long asyncTime = processOrdersAsync(orders2);
+        long asyncTime = processOrdersAsync(ordersOther);
 
         // Then
         assertThat(asyncTime).isLessThan(syncTime);
@@ -152,26 +152,21 @@ class AsyncTest {
     void shouldNotTakeTooManyProductsFromDataBase() {
         // Given
         generateInitialData();
-        long itemsInTotal = productRepository.getAllProducts().stream()
+        long itemsRemaining = productRepository.getAllProducts().stream()
                 .map(Product::getAmountAvailable)
                 .reduce(0, Integer::sum);
 
         // When
         processOrdersAsync(orders);
-//        long itemsRemaining = productRepository.getAllProducts().stream()
-//                .map(Product::getAmountAvailable)
-//                .reduce(0, Integer::sum);
-        long itemsSupposedlyRemaining = orders.stream()
-                .flatMap(order -> order.getProducts().stream())
-                .mapToLong(Product::getAmountAvailable)
+        long itemsTaken1 = orders.stream()
+                .mapToLong(order -> order.getProducts().size())
+                .sum();
+
+        long itemsTaken2 = ordersOther.stream()
+                .mapToLong(order -> order.getProducts().size())
                 .sum();
 
         // Then
-        System.out.println("Items in total: " + itemsInTotal);
-//        System.out.println("itemsRemaining: " + itemsRemaining);
-        System.out.println("itemsSupposedlyRemaining: " + itemsSupposedlyRemaining);
-
-
-//        assertThat(itemsSupposedlyRemaining).isEqualTo(itemsRemaining);
+        assertThat(itemsRemaining).isEqualTo((long) AMOUNT_OF_PRODUCTS_AVAILABLE * productManager.getAllProductsFromDataBase().size() - itemsTaken1 - itemsTaken2);
     }
 }

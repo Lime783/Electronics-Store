@@ -31,6 +31,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import static com.example.archive.ArchiveUtils.resetArchive;
+import static com.example.logger.MyLogger.log;
 
 public class CLI {
     final Scanner scanner = new Scanner(System.in);
@@ -97,7 +98,7 @@ public class CLI {
             case "5" -> listEverything();
             case "HELP" -> showHelp();
             case "QUIT" -> System.exit(0);
-            default -> System.out.println("Unknown command, try again or use HELP");
+            default -> log.error("Unknown command, try again or use HELP");
         }
     }
 
@@ -112,7 +113,7 @@ public class CLI {
             case "1" -> addCustomer();
             case "2" -> deleteCustomer();
             case "3" -> listAllCustomers();
-            default -> System.out.println("Unknown command, try again");
+            default -> log.error("Unknown command, try again");
         }
     }
 
@@ -154,7 +155,7 @@ public class CLI {
                 customerManager.getCustomerById(id)
         );
 
-        System.out.println("Successfully deleted: " + customerManager.getCustomerById(id).getFirstName() + " " + customerManager.getCustomerById(id).getLastName());
+        log.info("Successfully deleted: {} {}", customerManager.getCustomerById(id).getFirstName(), customerManager.getCustomerById(id).getLastName());
     }
 
     private void listAllCustomers() {
@@ -172,7 +173,7 @@ public class CLI {
             case "1" -> addProduct();
             case "2" -> deleteProduct();
             case "3" -> listAllProducts();
-            default -> System.out.println("Unknown command, try again");
+            default -> log.error("Unknown command, try again");
         }
     }
 
@@ -187,7 +188,7 @@ public class CLI {
             case "1" -> addComputer();
             case "2" -> addSmartphone();
             case "3" -> addOther();
-            default -> System.out.println("Unknown command, try again");
+            default -> log.error("Unknown command, try again");
         }
     }
 
@@ -296,7 +297,7 @@ public class CLI {
             case "2" -> deleteCart();
             case "3" -> listAllCarts();
             case "4" -> addProductToCart();
-            default -> System.out.println("Unknown command, try again");
+            default -> log.error("Unknown command, try again");
         }
     }
 
@@ -346,7 +347,7 @@ public class CLI {
             case "4" -> confirmOrder();
             case "5" -> completeOrder();
             case "6" -> createInvoice();
-            default -> System.out.println("Unknown command, try again");
+            default -> log.error("Unknown command, try again");
         }
     }
 
@@ -382,9 +383,9 @@ public class CLI {
         System.out.print("Total to pay: " + orderToConfirm.getTotalPrice() + ", would you like to pay? (Y/N)");
         if (scanner.nextLine().equalsIgnoreCase("Y")) {
             orderToConfirm.confirm();
-            System.out.print("Payment successful for order: " + orderToConfirm.getId());
+            log.info("Payment successful for order: {}", orderToConfirm.getId());
         } else {
-            System.out.print("Bruh");
+            log.error("Bruh");
         }
     }
 

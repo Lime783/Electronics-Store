@@ -1,5 +1,6 @@
 package com.example.shop.pricing;
 
+import com.example.clock.Clock;
 import com.example.shop.cart.Cart;
 import com.example.shop.customer.Customer;
 import com.example.shop.order.InMemoryOrderRepository;
@@ -16,18 +17,20 @@ import org.junit.jupiter.api.Test;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class PromoTest {
 
+    Clock clock = Clock.INSTANCE;
     private InMemoryOrderRepository inMemoryOrderRepository;
     private OrderManager orderManager;
     private final Customer customer = new Customer("Jan", "Chrzan", "Jan@Chrzan.pl", "123456", "123456789");
     private final Product computer = new Computer("Komputer", new BigDecimal("100"), 10, new Processor(Processor.Producer.INTEL, Processor.Model.RYZEN_7_7800X3D, 16), new RAM(256, RAM.Producer.CORSAIR, RAM.Model.FURY_BEAST), new PCCase(1000, 1000));
 
-    private final LocalDateTime after4PM = LocalDateTime.of(2026, 6, 7, 17, 0);
+    private final ZonedDateTime after4PM = LocalDateTime.of(2026, 6, 7, 17, 0).atZone(clock.zoneId());
     Cart cart = new Cart();
 
     @BeforeEach
